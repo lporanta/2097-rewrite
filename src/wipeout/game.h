@@ -10,8 +10,8 @@
 
 #define NUM_AI_OPPONENTS 7
 #define NUM_PILOTS_PER_TEAM 2
-#define NUM_NON_BONUS_CIRCUTS 6
-#define NUM_MUSIC_TRACKS 22 //11
+#define NUM_NON_BONUS_CIRCUTS 8
+#define NUM_MUSIC_TRACKS 11
 #define NUM_HIGHSCORES 5
 
 #define NUM_LAPS 3
@@ -91,13 +91,6 @@ enum team {
 };
 
 enum circut {
-	CIRCUT_ALTIMA_VII,
-	CIRCUT_KARBONIS_V,
-	CIRCUT_TERRAMAX,
-	CIRCUT_KORODERA,
-	CIRCUT_ARRIDOS_IV,
-	CIRCUT_SILVERSTREAM,
-	CIRCUT_FIRESTAR,
 	CIRCUT_VOSTOK_ISLAND,
 	CIRCUT_VALPARAISO,
 	CIRCUT_PHENITIA_PARK,
@@ -262,7 +255,6 @@ typedef struct {
 
 	// misc
 	bool rumble;
-	bool mode_2097;
 
 	uint32_t has_rapier_class;
 	uint32_t has_bonus_circuts;

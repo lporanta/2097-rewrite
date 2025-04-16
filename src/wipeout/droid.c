@@ -198,6 +198,7 @@ void droid_update_idle(droid_t *droid, ship_t *ship) {
 	droid->acceleration.z = (cos(droid->angle.y) * cos(droid->angle.x)) * 0.125 * 4096;
 
 	if (flags_is(ship->flags, SHIP_IN_RESCUE)) {
+		// droid->position = ship->position;
 		flags_add(droid->sfx_tractor->flags, SFX_PLAY);
 
 		droid->update_func = droid_update_rescue;
@@ -221,6 +222,7 @@ void droid_update_idle(droid_t *droid, ship_t *ship) {
 			droid->position.y = droid->section->center.y - 3000;
 			droid->position.z = (droid->section->center.z + next->center.z) * 0.5;
 		}
+
 		flags_rm(ship->flags, SHIP_IN_TOW);
 		droid->velocity = vec3(0,0,0);
 		droid->acceleration = vec3(0,0,0);
@@ -236,7 +238,6 @@ void droid_update_rescue(droid_t *droid, ship_t *ship) {
 	vec3_t target = vec3(ship->position.x, ship->position.y - 350, ship->position.z);
 	vec3_t distance = vec3_sub(target, droid->position);
 
-
 	if (flags_is(ship->flags, SHIP_IN_TOW)) {
 		droid->velocity = vec3(0,0,0);
 		droid->acceleration = vec3(0,0,0);
@@ -251,7 +252,6 @@ void droid_update_rescue(droid_t *droid, ship_t *ship) {
 	else {
 		droid->velocity = vec3_mulf(distance, 16);	
 	}
-
 
 	// Are we done rescuing?
 	if (flags_not(ship->flags, SHIP_IN_RESCUE)) {

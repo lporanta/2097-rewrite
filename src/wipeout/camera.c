@@ -100,7 +100,7 @@ void camera_update_race_external(camera_t *camera, ship_t *ship, droid_t *droid)
 	// TODO: don't clip walls, check distance?
 
 	vec3_t pos = vec3_sub(ship->position, vec3_mulf(ship->dir_forward, 1024));
-	pos.y -= 200;
+	pos.y -= 254;
 	camera->section = track_nearest_section(pos, vec3(1,1,1), camera->section, NULL);
 	section_t *next = camera->section->next;
 
@@ -108,7 +108,7 @@ void camera_update_race_external(camera_t *camera, ship_t *ship, droid_t *droid)
 
 	vec3_t diff_from_center = vec3_sub(pos, target);
 	vec3_t acc = diff_from_center;
-	acc.y += vec3_len(diff_from_center) * 0.5;
+	acc.y += vec3_len(diff_from_center) * 0.1; //0.5
 
 	camera->velocity = vec3_sub(camera->velocity, vec3_mulf(acc, 0.015625 * 30 * system_tick()));
 	camera->velocity = vec3_sub(camera->velocity, vec3_mulf(camera->velocity, 0.125 * 30 * system_tick()));

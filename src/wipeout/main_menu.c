@@ -25,7 +25,6 @@ static void page_options_misc_init(menu_t *menu);
 static void page_options_highscores_init(menu_t *menu);
 
 static uint16_t background;
-static uint16_t background2;
 static texture_list_t track_images;
 static menu_t *main_menu;
 
@@ -83,22 +82,12 @@ static void button_quit(menu_t *menu, int data) {
 }
 
 static void page_main_draw(menu_t *menu, int data) {
-	if (save.mode_2097) {
-		switch (data) {
-			case 0: draw_model(g.ships[1].model2, vec2(0, -0.1), vec3(0, 0, -700), system_cycle_time()); break;
-			// case 1: draw_model(models.menu_items_2097[0], vec2(0, -0.2), vec3(0, 0, -700), system_cycle_time()); break;
-			case 1: draw_model(models.menu_items_2097[7], vec2(0, -0.2), vec3(0, 0, -700), system_cycle_time()); break;
-			// case 2: draw_model(models.misc.msdos, vec2(0, -0.2), vec3(0, 0, -700), system_cycle_time()); break;
-			case 2: break; // draw nothing, we're not on msdos anymore
-		}
-	} else {
-		switch (data) {
-			case 0: draw_model(g.ships[0].model, vec2(0, -0.1), vec3(0, 0, -700), system_cycle_time()); break;
-			// case 1: draw_model(models.menu_items_2097[0], vec2(0, -0.2), vec3(0, 0, -700), system_cycle_time()); break;
-			case 1: draw_model(models.misc.options, vec2(0, -0.2), vec3(0, 0, -700), system_cycle_time()); break;
-			// case 2: draw_model(models.misc.msdos, vec2(0, -0.2), vec3(0, 0, -700), system_cycle_time()); break;
-			case 2: break; // draw nothing, we're not on msdos anymore
-		}
+	switch (data) {
+		case 0: draw_model(g.ships[1].model, vec2(0, -0.1), vec3(0, 0, -700), system_cycle_time()); break;
+		// case 1: draw_model(models.menu_items_2097[0], vec2(0, -0.2), vec3(0, 0, -700), system_cycle_time()); break;
+		case 1: draw_model(models.menu_items_2097[7], vec2(0, -0.2), vec3(0, 0, -700), system_cycle_time()); break;
+		// case 2: draw_model(models.misc.msdos, vec2(0, -0.2), vec3(0, 0, -700), system_cycle_time()); break;
+		case 2: break; // draw nothing, we're not on msdos anymore
 	}
 }
 
@@ -429,11 +418,6 @@ static void toggle_rapier(menu_t *menu, int data) {
 	save.is_dirty = true;
 }
 
-static void toggle_2097(menu_t *menu, int data) {
-	save.mode_2097 = data;
-	save.is_dirty = true;
-}
-
 static void page_options_misc_init(menu_t *menu) {
 	menu_page_t *page = menu_push(menu, "MISC", NULL);
 
@@ -447,7 +431,6 @@ static void page_options_misc_init(menu_t *menu) {
 	menu_page_add_toggle(page, save.rumble, "CONTROLLER RUMBLE", opts_off_on, len(opts_off_on), toggle_rumble);
 	menu_page_add_toggle(page, save.has_bonus_circuts, "BONUS CIRCUITS", opts_off_on, len(opts_off_on), toggle_bonus_circuts);
 	menu_page_add_toggle(page, save.has_rapier_class, "RAPIER CLASS", opts_off_on, len(opts_off_on), toggle_rapier);
-	menu_page_add_toggle(page, save.mode_2097, "2097 MODE", opts_off_on, len(opts_off_on), toggle_2097);
 }
 
 // -----------------------------------------------------------------------------
@@ -551,7 +534,8 @@ static void page_options_highscores_init(menu_t *menu) {
 	page->items_anchor = UI_POS_BOTTOM | UI_POS_CENTER;
 
 	options_highscores_race_class = RACE_CLASS_VENOM;
-	options_highscores_circut = CIRCUT_ALTIMA_VII;
+	// options_highscores_circut = CIRCUT_ALTIMA_VII;
+	options_highscores_circut = CIRCUT_VOSTOK_ISLAND;
 
 	menu_page_add_button(page, HIGHSCORE_TAB_TIME_TRIAL, "TIME TRIAL TIMES", button_highscores_viewer);
 	menu_page_add_button(page, HIGHSCORE_TAB_RACE, "RACE TIMES", button_highscores_viewer);
@@ -575,12 +559,12 @@ static void page_race_class_draw(menu_t *menu, int data) {
 	page->title_anchor = UI_POS_TOP | UI_POS_CENTER;
 	page->items_pos = vec2i(0, -110);
 	page->items_anchor = UI_POS_BOTTOM | UI_POS_CENTER;
-	if (save.mode_2097 && data==0) {
+	if (data==0) {
 		draw_model(models.menu_items_2097[0], vec2(0, -0.2), vec3(0, 0, -500), system_cycle_time());
-	} else if (save.mode_2097 && data==1) {
+	} else if (data==1) {
 		draw_model(models.menu_items_2097[3], vec2(0, -0.2), vec3(0, 0, -500), system_cycle_time());
 	} else {
-		draw_model(models.race_classes[data], vec2(0, -0.2), vec3(0, 0, -350), system_cycle_time());
+		// draw_model(models.race_classes[data], vec2(0, -0.2), vec3(0, 0, -350), system_cycle_time());
 	}
 
 	if (!save.has_rapier_class && data == RACE_CLASS_RAPIER) {
@@ -607,18 +591,10 @@ static void button_race_type_select(menu_t *menu, int data) {
 }
 
 static void page_race_type_draw(menu_t *menu, int data) {
-	if (save.mode_2097) {
-		switch (data) {
-			case 0: draw_model(models.misc.championship, vec2(0, -0.2), vec3(0, 0, -400), system_cycle_time()); break;
-			case 1: draw_model(models.menu_items_2097[8], vec2(0, -0.2), vec3(0, 0, -600), system_cycle_time()); break;
-			case 2: draw_model(models.menu_items_2097[2], vec2(0, -0.2), vec3(0, 0, -600), system_cycle_time()); break;
-		}
-	} else {
-		switch (data) {
-			case 0: draw_model(models.misc.championship, vec2(0, -0.2), vec3(0, 0, -400), system_cycle_time()); break;
-			case 1: draw_model(models.misc.single_race, vec2(0, -0.2), vec3(0, 0, -400), system_cycle_time()); break;
-			case 2: draw_model(models.options.stopwatch, vec2(0, -0.2), vec3(0, 0, -400), system_cycle_time()); break;
-		}
+	switch (data) {
+		case 0: draw_model(models.misc.championship, vec2(0, -0.2), vec3(0, 0, -400), system_cycle_time()); break;
+		case 1: draw_model(models.menu_items_2097[8], vec2(0, -0.2), vec3(0, 0, -600), system_cycle_time()); break;
+		case 2: draw_model(models.menu_items_2097[2], vec2(0, -0.2), vec3(0, 0, -600), system_cycle_time()); break;
 	}
 }
 
@@ -630,7 +606,7 @@ static void page_race_type_init(menu_t *menu) {
 	page->items_pos = vec2i(0, -110);
 	page->items_anchor = UI_POS_BOTTOM | UI_POS_CENTER;
 	// hack to not show championship when mode 2097
-	for (int i = save.mode_2097; i < len(def.race_types); i++) {
+	for (int i = 1; i < len(def.race_types); i++) {
 		menu_page_add_button(page, i, def.race_types[i].name, button_race_type_select);
 	}
 }
@@ -646,13 +622,8 @@ static void button_team_select(menu_t *menu, int data) {
 static void page_team_draw(menu_t *menu, int data) {
 	int team_model_index = (data + 3) % 4; // models in the prm are shifted by -1
 	draw_model(models.teams[team_model_index], vec2(0, -0.2), vec3(0, 0, -10000), system_cycle_time());
-	if (save.mode_2097) {
-		draw_model(g.ships[def.teams[data].pilots[0]].model2, vec2(0, -0.3), vec3(-700, -800, -1300), system_cycle_time()*-1.1);
-		draw_model(g.ships[def.teams[data].pilots[1]].model2, vec2(0, -0.3), vec3( 700, -800, -1300), system_cycle_time()*-1.2);
-	} else {
-		draw_model(g.ships[def.teams[data].pilots[0]].model, vec2(0, -0.3), vec3(-700, -800, -1300), system_cycle_time()*-1.1);
-		draw_model(g.ships[def.teams[data].pilots[1]].model, vec2(0, -0.3), vec3( 700, -800, -1300), system_cycle_time()*-1.2);
-	}
+	draw_model(g.ships[def.teams[data].pilots[0]].model, vec2(0, -0.3), vec3(-700, -800, -1300), system_cycle_time()*-1.1);
+	draw_model(g.ships[def.teams[data].pilots[1]].model, vec2(0, -0.3), vec3( 700, -800, -1300), system_cycle_time()*-1.2);
 }
 
 static void page_team_init(menu_t *menu) {
@@ -711,16 +682,7 @@ static void page_circut_draw(menu_t *menu, int data) {
 	vec2i_t size = vec2i(128, 74);
 	vec2i_t scaled_size = ui_scaled(size);
 	vec2i_t scaled_pos = ui_scaled_pos(UI_POS_MIDDLE | UI_POS_CENTER, vec2i(pos.x - size.x/2, pos.y - size.y/2));
-	// don't draw images if we add bonus tracks from 2097
-	// if (!save.has_bonus_circuts) { 
-	// if (data < 7) { 
-	if (save.mode_2097) { 
-		// draw_model(models.tracks2[data-7], vec2(0, -0.2), vec3(0, 0, -700), system_cycle_time());
-		draw_model(models.tracks_2097[data-7], vec2(0, -0.2), vec3(0, 0, -900), system_cycle_time());
-		// draw_model(g.ships[def.teams[data].pilots[0]].model2, vec2(0, -0.3), vec3(-700, -800, -1300), system_cycle_time()*-1.1);
-	} else {
-		render_push_2d(scaled_pos, scaled_size, rgba(128, 128, 128, 255), texture_from_list(track_images, data));
-	}
+	draw_model(models.tracks_2097[data], vec2(0, -0.2), vec3(0, 0, -900), system_cycle_time());
 }
 
 static void page_circut_init(menu_t *menu) {
@@ -728,17 +690,11 @@ static void page_circut_init(menu_t *menu) {
 	flags_add(page->layout_flags, MENU_FIXED);
 	page->title_pos = vec2i(0, 30);
 	page->title_anchor = UI_POS_TOP | UI_POS_CENTER;
-	// different shift if we don't draw track_images because of bonus_circuits from 2097
-	// TODO: scale properly
-	page->items_pos = (save.mode_2097) ? vec2i(0, -150) : vec2i(0, -100); // 100
+	page->items_pos = vec2i(0, -150);
 	// page->items_pos = vec2i(0, -150); // 100
 	page->items_anchor = UI_POS_BOTTOM | UI_POS_CENTER;
 	for (int i = 0; i < len(def.circuts); i++) {
-		if ((!def.circuts[i].is_bonus_circut || save.has_bonus_circuts) && !save.mode_2097 && i < 7) {
-			menu_page_add_button(page, i, def.circuts[i].name, button_circut_select);
-		} else if (save.mode_2097 && i > 6) {
-			menu_page_add_button(page, i, def.circuts[i].name, button_circut_select);
-		}
+		menu_page_add_button(page, i, def.circuts[i].name, button_circut_select);
 	}
 	// for (int i = 0; i < len(def.circuts); i++) {
 	// 	if (!def.circuts[i].is_bonus_circut || save.has_bonus_circuts) {
@@ -766,8 +722,7 @@ void main_menu_init(void) {
 
 	main_menu = mem_bump(sizeof(menu_t));
 
-	background = image_get_texture("wipeout/textures/wipeout1.tim");
-	background2 = image_get_texture("wipeout2/textures/menupic.tim");
+	background = image_get_texture("wipeout2/textures/menupic.tim");
 
 	track_images = image_get_compressed_textures("wipeout/textures/track.cmp");
 
@@ -787,11 +742,7 @@ void main_menu_init(void) {
 
 void main_menu_update(void) {
 	render_set_view_2d();
-	if (save.mode_2097) {
-		render_push_2d(vec2i(0, 0), render_size(), rgba(128, 128, 128, 255), background2);
-	} else {
-		render_push_2d(vec2i(0, 0), render_size(), rgba(128, 128, 128, 255), background);
-	}
+	render_push_2d(vec2i(0, 0), render_size(), rgba(128, 128, 128, 255), background);
 
 	menu_update(main_menu);
 }

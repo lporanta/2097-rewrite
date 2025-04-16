@@ -19,29 +19,23 @@
 #include "particle.h"
 
 void ships_load(void) {
-	texture_list_t ship_textures = image_get_compressed_textures("wipeout/common/allsh.cmp");
-	Object *ship_models = objects_load("wipeout/common/allsh.prm", ship_textures);
-
-	// and 2097 models
-	texture_list_t ship_textures2 = image_get_compressed_textures("wipeout/common/allsh2.cmp");
-	Object *ship_models2 = objects_load("wipeout/common/allsh2.prm", ship_textures2);
+	// 2097 models
+	texture_list_t ship_textures = image_get_compressed_textures("wipeout/common/allsh2.cmp");
+	Object *ship_models = objects_load("wipeout/common/allsh2.prm", ship_textures);
 
 	texture_list_t collision_textures = image_get_compressed_textures("wipeout/common/alcol.cmp");
 	Object *collision_models = objects_load("wipeout/common/alcol.prm", collision_textures);
 
 	int object_index;
 	Object *ship_model = ship_models;
-	Object *ship_model2 = ship_models2;
 	Object *collision_model = collision_models;
 
 	for (object_index = 0; object_index < len(g.ships) && ship_model && collision_model; object_index++) {
 		int ship_index = def.ship_model_to_pilot[object_index];
 		g.ships[ship_index].model = ship_model;
-		g.ships[ship_index].model2 = ship_model2;
 		g.ships[ship_index].collision_model = collision_model;
 
 		ship_model = ship_model->next;
-		ship_model2 = ship_model2->next;
 		collision_model = collision_model->next;
 
 		ship_init_exhaust_plume(&g.ships[ship_index]);
@@ -73,7 +67,8 @@ void ships_init(section_t *section) {
 	}
 
 	// Randomize order for single race or new championship
-	if (g.race_type != RACE_TYPE_CHAMPIONSHIP || g.circut == CIRCUT_ALTIMA_VII) {
+	// if (g.race_type != RACE_TYPE_CHAMPIONSHIP || g.circut == CIRCUT_ALTIMA_VII) {
+	if (g.race_type != RACE_TYPE_CHAMPIONSHIP) {
 		shuffle(ranks_to_pilots, len(ranks_to_pilots));
 	}
 
@@ -168,7 +163,6 @@ void ships_reset_exhaust_plumes(void) {
 	}
 }
 
-
 void ships_draw(void) {
 	// Ship models
 	for (int i = 0; i < len(g.ships); i++) {
@@ -204,26 +198,23 @@ void ships_draw(void) {
 	render_set_depth_offset(0.0);
 	render_set_depth_write(true);
 	
-	// 2097 flare
-	if (save.mode_2097) {
-		for (int i = 0; i < len(g.ships); i++) {
-			if (
-				(g.race_type == RACE_TYPE_TIME_TRIAL && i != g.pilot) ||
-				flags_not(g.ships[i].flags, SHIP_VISIBLE)
-			) {
-				continue;
-			}
-			// required or player flare ugly and race crashes
-			ship_update_unit_vectors(&g.ships[i]);
-			// ship_draw_flare(&g.ships[i]);
-			ship_draw_flare_psx(&g.ships[i]);
-			if (i == g.pilot && g.ships[i].lap < NUM_LAPS) {
-				ship_draw_player_trail(&g.ships[i]);
-			} else {
-				ship_draw_trail(&g.ships[i]);
-			}
+	// engine flare
+	for (int i = 0; i < len(g.ships); i++) {
+		if (
+			(g.race_type == RACE_TYPE_TIME_TRIAL && i != g.pilot) ||
+			flags_not(g.ships[i].flags, SHIP_VISIBLE)
+		) {
+			continue;
 		}
-		// printf("g.is_attract_mode: %d\n", g.is_attract_mode);
+		// required or player flare ugly and race crashes
+		ship_update_unit_vectors(&g.ships[i]);
+		// ship_draw_flare(&g.ships[i]);
+		ship_draw_flare_psx(&g.ships[i]);
+		if (i == g.pilot && (g.ships[i].lap < NUM_LAPS || !g.is_attract_mode)) {
+			ship_draw_player_trail(&g.ships[i]);
+		} else {
+			ship_draw_trail(&g.ships[i]);
+		}
 	}
 }
 
@@ -446,8 +437,6 @@ void ship_reset_exhaust_plume(ship_t* self)
 }
 
 void ship_draw(ship_t *self) {
-	// object_draw(save.mode_2097 ? self->model2 : self->model, &self->mat);
-	
 	// TODO: something more efficient and DRY?
 	// Figure out which side of the track the ship is on
 	track_face_t *face = track_section_get_base_face(self->section);
@@ -467,15 +456,7 @@ void ship_draw(ship_t *self) {
 		face++;
 	}
 
-	if (save.mode_2097 && save.dynamic_lighting) {
-		object_draw_colored(self->model2, &self->mat, face->tris[0].vertices[0].color);
-	} else if (save.mode_2097) {
-		object_draw(self->model2, &self->mat);
-	} else if (save.dynamic_lighting) {
-		object_draw_colored(self->model, &self->mat, face->tris[0].vertices[0].color);
-	} else {
-		object_draw(self->model, &self->mat);
-	}
+	object_draw_colored(self->model, &self->mat, face->tris[0].vertices[0].color);
 }
 
 void ship_draw_flare(ship_t *self) {	
@@ -1450,47 +1431,31 @@ void ship_resolve_wing_collision(ship_t *self, track_face_t *face, float directi
 	vec3_t to_center = vec3_normalize(vec3_sub(self->section->center, self->position));
 	float angle = vec3_angle(collision_vector, self->dir_forward);
 
-	if (save.mode_2097) {
-		self->velocity = vec3_mulf(self->velocity, 0.95);
-		self->position = vec3_add(self->position, vec3_mulf(to_center, fabs(collision_dot) * 32));
-		// self->velocity = vec3_add(self->velocity, vec3_mulf(face->normal, 4096 * 1.0 * !save.mode_2097)); // div by 4096?
-		// self->velocity = vec3_add(self->velocity, vec3_mulf(to_center, 256 * !save.mode_2097));
-		self->velocity = vec3_add(self->velocity, vec3_mulf(to_center, fabs(collision_dot) * 2048));
-	} else {
-		self->velocity = vec3_reflect(self->velocity, face->normal, 2);
-		// float angle = vec3_angle(collision_vector, self->velocity);
-		// float speedf = self->speed * 0.00015;
-		self->velocity = vec3_mulf(self->velocity, 0.63); //0.5
-		// self->position = vec3_sub(self->position, vec3_mulf(self->velocity, 0.015625)); // system_tick?
-		self->position = vec3_sub(self->position, vec3_mulf(self->velocity, system_tick()));
-		self->velocity = vec3_add(self->velocity, vec3_mulf(face->normal, 4096.0)); // div by 4096?
-		// self->velocity = vec3_sub(self->velocity, vec3_mulf(self->velocity, 0.5));
-		self->velocity = vec3_add(self->velocity, vec3_mulf(to_center, 256.0));
-		self->velocity = vec3_add(self->velocity, vec3_mulf(to_center, fabs(collision_dot) * 2048));
-	}
+	self->velocity = vec3_mulf(self->velocity, 0.95);
+	self->position = vec3_add(self->position, vec3_mulf(to_center, fabs(collision_dot) * 32));
+	self->velocity = vec3_add(self->velocity, vec3_mulf(to_center, fabs(collision_dot) * 2048));
 	// printf("c angle: %f\n", angle);
 	// printf("c dot  : %f\n", collision_dot);
 
 	// float magnitude = (fabsf(angle) * self->speed) * M_PI / (4096 * 16.0); // (6 velocity shift, 12 angle shift?)
 	float magnitude = (fabsf(angle) * self->speed) * M_PI / 4096.0; // orig was too weak, but jnmartin84 added too much?
-	magnitude *= !save.mode_2097;
 
-	// wing roll
+	// wing pos (and possible roll)
 	vec3_t wing_pos;
 	if (direction > 0) {
-		self->angular_velocity.z += magnitude;
+		// self->angular_velocity.z += magnitude;
 		wing_pos = vec3_add(self->position, vec3_mulf(vec3_sub(self->dir_right, self->dir_forward), 256)); // >> 4??
 	}
 	else {
-		self->angular_velocity.z -= magnitude;	
+		// self->angular_velocity.z -= magnitude;	
 		wing_pos = vec3_sub(self->position, vec3_mulf(vec3_sub(self->dir_right, self->dir_forward), 256)); // >> 4??
 	}
 
 	// wing yaw 2097
-	if (save.mode_2097 && direction > 0) {
+	if (direction > 0) {
 		self->angular_velocity.y += 0.1;
 	}
-	else if (save.mode_2097) {
+	else {
 		self->angular_velocity.y -= 0.1;	
 	}
 
@@ -1504,16 +1469,6 @@ void ship_resolve_wing_collision(ship_t *self, track_face_t *face, float directi
 			camera_add_shake(&g.camera, 0.15);
 		}
 	}
-
-	// 2097 scrape particles
-	// if (save.mode_2097) {
-	// 	int ptype = PARTICLE_TYPE_FIRE_WHITE;
-	// 	if (rand() % 20) {
-	// 		ptype = PARTICLE_TYPE_SMOKE;
-	// 	}
-	// 	particles_spawn(self->position, ptype, vec3_mulf(self->velocity, 0.02), 500.0);
-	// 	// printf("particles!\n");
-	// }
 }
 
 void ship_resolve_nose_collision(ship_t *self, track_face_t *face, float direction) {
@@ -1530,14 +1485,13 @@ void ship_resolve_nose_collision(ship_t *self, track_face_t *face, float directi
 	self->velocity = vec3_add(self->velocity, vec3_mulf(face->normal, 4096)); // div by 4096?
 	self->velocity = vec3_add(self->velocity, vec3_mulf(to_center, 256));
 
-	// float magnitude = ((self->speed * 0.0625) + 400) * M_PI / (4096.0 * 64.0);
-	float magnitude = (fabsf(angle) * self->speed) * 2 * M_PI / (4096.0); // was too weak
-	if (direction > 0) {
-		self->angular_velocity.y += magnitude;
-	}
-	else { 
-		self->angular_velocity.y -= magnitude;
-	}
+	// float magnitude = (fabsf(angle) * self->speed) * 2 * M_PI / (4096.0); // was too weak
+	// if (direction > 0) {
+	// 	self->angular_velocity.y += magnitude;
+	// }
+	// else { 
+	// 	self->angular_velocity.y -= magnitude;
+	// }
 
 	if (self->last_impact_time > 0.2) {
 		self->last_impact_time = 0;

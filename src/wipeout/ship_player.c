@@ -385,10 +385,8 @@ void ship_player_update_race(ship_t *self) {
 		// Collision with floor
 		if (height <= 0) {
 			// Move back, some magic numbers here
-			if (save.mode_2097) {
-				self->position = vec3_add(self->position, vec3_mulf(face->normal, 0.015625 * 120 * system_tick()));
-				// self->position = vec3_sub(self->position, vec3_mulf(self->velocity, 0.015625 * 120 * system_tick()));
-			}
+			self->position = vec3_add(self->position, vec3_mulf(face->normal, 0.015625 * 120 * system_tick()));
+			// self->position = vec3_sub(self->position, vec3_mulf(self->velocity, 0.015625 * 120 * system_tick()));
 
 			if (self->last_impact_time > 0.2) {
 				self->last_impact_time = 0;
@@ -402,14 +400,13 @@ void ship_player_update_race(ship_t *self) {
 		}
 		else if (height < 30) {
 			self->velocity = vec3_add(self->velocity, vec3_mulf(face->normal, 64.0 * 30 * system_tick())); //4096
-			// self->velocity = vec3_add(self->velocity, vec3_mulf(face->normal, !save.mode_2097 * 4096.0 * 30 * system_tick()));
 		}
 
 		if (height < 50) {
 			height = 50;
 		}
 
-		if (save.mode_2097 && height < 100) {
+		if (height < 100) {
 			self->velocity = vec3_reflect(self->velocity, face->normal, 0.5);
 		}
 
@@ -429,7 +426,10 @@ void ship_player_update_race(ship_t *self) {
 		// Burying the nose in the track? Move it out!
 		vec3_t nose_pos = vec3_add(self->position, vec3_mulf(self->dir_forward, 128));
 		float nose_height = vec3_distance_to_plane(nose_pos, face_point, face->normal);
-		if (nose_height < 600) {
+
+		// TODO: better values
+		// if (nose_height < 600) {
+		if (self->angle.x < 0.3) {
 			self->angular_acceleration.x += NTSC_ACCELERATION(ANGLE_NORM_TO_RADIAN(FIXED_TO_FLOAT((height - nose_height + 5) * (1.0/16.0))));
 		}
 		else {
@@ -532,7 +532,6 @@ void ship_player_update_race(ship_t *self) {
 
 
 void ship_player_update_rescue(ship_t *self) {
-
 	section_t *next = self->section->next;
 
 	if (flags_is(self->flags, SHIP_IN_TOW)) {
@@ -549,7 +548,6 @@ void ship_player_update_rescue(ship_t *self) {
 
 	self->velocity = vec3_sub(self->velocity, vec3_mulf(self->velocity, 0.0625 * 30 * system_tick()));
 	self->position = vec3_add(self->position, vec3_mulf(self->velocity, 0.03125 * 30 * system_tick()));
-
 
 	// Are we done being rescued?
 	float distance = vec3_len(vec3_sub(self->position, self->temp_target));

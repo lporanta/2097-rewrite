@@ -80,10 +80,10 @@ static void button_music_random(menu_t *menu, int data) {
 static void button_music(menu_t *menu, int data) {
 	menu_page_t *page = menu_push(menu, "MUSIC", NULL);
 
-	// for (int i = 0; i < len(def.music); i++) {
-	// 	menu_page_add_button(page, i, def.music[i].name, button_music_track);
-	// }
-	menu_page_add_button(page, 0, "RANDOM", button_music_random);
+	for (int i = 0; i < len(def.music); i++) {
+		menu_page_add_button(page, i, def.music[i].name, button_music_track);
+	}
+	// menu_page_add_button(page, 0, "RANDOM", button_music_random);
 }
 
 menu_t *pause_menu_init(void) {
@@ -97,7 +97,6 @@ menu_t *pause_menu_init(void) {
 	menu_page_add_button(page, 0, "MUSIC", button_music);
 	return ingame_menu;
 }
-
 
 
 // -----------------------------------------------------------------------------

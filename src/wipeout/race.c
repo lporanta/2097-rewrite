@@ -40,9 +40,9 @@ void race_init(void) {
 	scene_load(cs->path, cs->sky_y_offset);
 	// scene_load(cs_venom->path, cs_venom->sky_y_offset);
 	
-	if (g.circut == CIRCUT_SILVERSTREAM && g.race_class == RACE_CLASS_RAPIER) {
-		scene_init_aurora_borealis();	
-	} 
+	// if (g.circut == CIRCUT_SILVERSTREAM && g.race_class == RACE_CLASS_RAPIER) {
+	// 	scene_init_aurora_borealis();	
+	// } 
 
 	race_start();
 	// render_textures_dump("texture_atlas.png");
