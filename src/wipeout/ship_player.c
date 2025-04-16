@@ -454,6 +454,8 @@ void ship_player_update_race(ship_t *self) {
 
 		// Do we need to be rescued?
 		if (vec3_len(distance) > 8000) { //8000
+			printf("rescue me!\n");
+			// g.droid.position = self->position;
 			self->update_func = ship_player_update_rescue;
 			self->update_timer = UPDATE_TIME_RESCUE;
 			flags_add(self->flags, SHIP_IN_RESCUE | SHIP_FLYING);
@@ -471,6 +473,7 @@ void ship_player_update_race(ship_t *self) {
 			self->velocity = vec3(0, 0, 0);
 			self->thrust = vec3(0, 0, 0);
 			self->thrust_mag = 0;
+			self->speed = 0;
 		}
 
 		float brake = (self->brake_left + self->brake_right);

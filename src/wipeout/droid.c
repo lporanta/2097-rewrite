@@ -152,16 +152,18 @@ void droid_update_intro(droid_t *droid, ship_t *ship) {
 	}
 
 	else if (droid->update_timer < DROID_UPDATE_TIME_INTRO_1) {
+		droid->update_timer = 0;
 		droid->acceleration.y -= 90 * system_tick();
 		droid->angular_velocity.y = (8.0 / 4096.0) * M_PI * 2 * 30;
+		droid->update_func = droid_update_idle;
 	}
 
 	if (droid->update_timer <= 0) {
-		droid->update_timer = DROID_UPDATE_TIME_INITIAL;
-		droid->update_func = droid_update_idle;
-		droid->position.x = droid->section->center.x;
-		droid->position.y = -3000;
-		droid->position.z = droid->section->center.z;
+		// droid->update_timer = DROID_UPDATE_TIME_INITIAL;
+		// droid->update_func = droid_update_idle;
+		// droid->position.x = droid->section->center.x;
+		// droid->position.y = -3000;
+		// droid->position.z = droid->section->center.z;
 	}
 }
 
@@ -198,11 +200,10 @@ void droid_update_idle(droid_t *droid, ship_t *ship) {
 	droid->acceleration.z = (cos(droid->angle.y) * cos(droid->angle.x)) * 0.125 * 4096;
 
 	if (flags_is(ship->flags, SHIP_IN_RESCUE)) {
-		// droid->position = ship->position;
+		droid->position = ship->position;
 		flags_add(droid->sfx_tractor->flags, SFX_PLAY);
 
 		droid->update_func = droid_update_rescue;
-		droid->update_timer = DROID_UPDATE_TIME_INITIAL;
 
 		g.camera.update_func = camera_update_rescue;
 		flags_add(ship->flags, SHIP_VIEW_REMOTE);
@@ -243,22 +244,23 @@ void droid_update_rescue(droid_t *droid, ship_t *ship) {
 		droid->acceleration = vec3(0,0,0);
 		droid->position = target;
 	}
-	else if (vec3_len(distance) < 8) {
+	// else if (vec3_len(distance) < 8000) {
+	else {
 		flags_add(ship->flags, SHIP_IN_TOW);
 		droid->velocity = vec3(0,0,0);
 		droid->acceleration = vec3(0,0,0);
 		droid->position = target;
 	}
-	else {
-		droid->velocity = vec3_mulf(distance, 16);	
-	}
+	// else {
+	// 	droid->velocity = vec3_mulf(distance, 16);	
+	// }
 
 	// Are we done rescuing?
 	if (flags_not(ship->flags, SHIP_IN_RESCUE)) {
 		flags_rm(droid->sfx_tractor->flags, SFX_PLAY);
 		droid->siren_started = false;
 		droid->update_func = droid_update_idle;
-		droid->update_timer = DROID_UPDATE_TIME_INITIAL;
+		// droid->update_timer = DROID_UPDATE_TIME_INITIAL;
 
 		int droid_start_section = droid->section->num;
 		while (flags_not(droid->section->flags, SECTION_JUMP)) {

@@ -210,7 +210,11 @@ void ships_draw(void) {
 		ship_update_unit_vectors(&g.ships[i]);
 		// ship_draw_flare(&g.ships[i]);
 		ship_draw_flare_psx(&g.ships[i]);
-		if (i == g.pilot && (g.ships[i].lap < NUM_LAPS && !g.is_attract_mode)) {
+		if (
+			i == g.pilot
+			&& (g.ships[i].lap < NUM_LAPS && !g.is_attract_mode)
+			&& flags_not(g.ships[i].flags, SHIP_IN_RESCUE)
+		) {
 			ship_draw_player_trail(&g.ships[i]);
 		} else {
 			ship_draw_trail(&g.ships[i]);
@@ -1041,7 +1045,7 @@ void ship_draw_shadow(ship_t *self) {
 	// wngl = vec3_sub(wngl, vec3_mulf(face->normal, vec3_distance_to_plane(wngl, face_point, face->normal)));
 	// wngr = vec3_sub(wngr, vec3_mulf(face->normal, vec3_distance_to_plane(wngr, face_point, face->normal)));
 
-	for (int i = 0; i < 6; i++) {
+	for (int i = 0; i < 7; i++) {
 	vec3_t nose = vec3_add(self->position, vec3_mulf(self->dir_forward, 200+i*32));
 	vec3_t wngl = vec3_sub(vec3_sub(self->position, vec3_mulf(self->dir_right, 128+i*32)), vec3_mulf(self->dir_forward, 384));
 	vec3_t wngr = vec3_sub(vec3_add(self->position, vec3_mulf(self->dir_right, 128+i*32)), vec3_mulf(self->dir_forward, 384));
