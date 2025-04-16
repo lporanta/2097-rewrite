@@ -330,10 +330,10 @@ static void toggle_post(menu_t *menu, int data) {
 	save.is_dirty = true;
 }
 
-static void toggle_dynamic_lighting(menu_t *menu, int data) {
-	save.dynamic_lighting = data;
-	save.is_dirty = true;
-}
+// static void toggle_dynamic_lighting(menu_t *menu, int data) {
+// 	save.dynamic_lighting = data;
+// 	save.is_dirty = true;
+// }
 
 static void toggle_psx_wobble(menu_t *menu, int data) {
 	save.psx_wobble = data;
@@ -365,7 +365,7 @@ static void page_options_video_init(menu_t *menu) {
 	menu_page_add_toggle(page, save.show_fps, "SHOW FPS", opts_off_on, len(opts_off_on), toggle_show_fps);
 	menu_page_add_toggle(page, save.screen_res, "SCREEN RESOLUTION", opts_res, len(opts_res), toggle_res);
 	menu_page_add_toggle(page, save.post_effect, "POST PROCESSING", opts_post, len(opts_post), toggle_post);
-	menu_page_add_toggle(page, save.dynamic_lighting, "DYNAMIC LIGHTING", opts_off_on, len(opts_off_on), toggle_dynamic_lighting);
+	// menu_page_add_toggle(page, save.dynamic_lighting, "DYNAMIC LIGHTING", opts_off_on, len(opts_off_on), toggle_dynamic_lighting);
 	menu_page_add_toggle(page, save.psx_wobble, "PSX WOBBLE", opts_off_on, len(opts_off_on), toggle_psx_wobble);
 	menu_page_add_toggle(page, save.screen_shake, "SCREEN SHAKE", opts_off_on, len(opts_off_on), toggle_screen_shake);
 }

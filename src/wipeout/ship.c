@@ -210,7 +210,7 @@ void ships_draw(void) {
 		ship_update_unit_vectors(&g.ships[i]);
 		// ship_draw_flare(&g.ships[i]);
 		ship_draw_flare_psx(&g.ships[i]);
-		if (i == g.pilot && (g.ships[i].lap < NUM_LAPS || !g.is_attract_mode)) {
+		if (i == g.pilot && (g.ships[i].lap < NUM_LAPS && !g.is_attract_mode)) {
 			ship_draw_player_trail(&g.ships[i]);
 		} else {
 			ship_draw_trail(&g.ships[i]);
@@ -1032,15 +1032,26 @@ void ship_draw_shadow(ship_t *self) {
 	track_face_t *face = track_section_get_base_face(self->section);
 
 	vec3_t face_point = face->tris[0].vertices[0].pos;
-	vec3_t nose = vec3_add(self->position, vec3_mulf(self->dir_forward, 384));
-	vec3_t wngl = vec3_sub(vec3_sub(self->position, vec3_mulf(self->dir_right, 256)), vec3_mulf(self->dir_forward, 384));
-	vec3_t wngr = vec3_sub(vec3_add(self->position, vec3_mulf(self->dir_right, 256)), vec3_mulf(self->dir_forward, 384));
+
+	// vec3_t nose = vec3_add(self->position, vec3_mulf(self->dir_forward, 384));
+	// vec3_t wngl = vec3_sub(vec3_sub(self->position, vec3_mulf(self->dir_right, 256+i*30)), vec3_mulf(self->dir_forward, 384));
+	// vec3_t wngr = vec3_sub(vec3_add(self->position, vec3_mulf(self->dir_right, 256+i*30)), vec3_mulf(self->dir_forward, 384));
+	//
+	// nose = vec3_sub(nose, vec3_mulf(face->normal, vec3_distance_to_plane(nose, face_point, face->normal)));
+	// wngl = vec3_sub(wngl, vec3_mulf(face->normal, vec3_distance_to_plane(wngl, face_point, face->normal)));
+	// wngr = vec3_sub(wngr, vec3_mulf(face->normal, vec3_distance_to_plane(wngr, face_point, face->normal)));
+
+	for (int i = 0; i < 6; i++) {
+	vec3_t nose = vec3_add(self->position, vec3_mulf(self->dir_forward, 200+i*32));
+	vec3_t wngl = vec3_sub(vec3_sub(self->position, vec3_mulf(self->dir_right, 128+i*32)), vec3_mulf(self->dir_forward, 384));
+	vec3_t wngr = vec3_sub(vec3_add(self->position, vec3_mulf(self->dir_right, 128+i*32)), vec3_mulf(self->dir_forward, 384));
 
 	nose = vec3_sub(nose, vec3_mulf(face->normal, vec3_distance_to_plane(nose, face_point, face->normal)));
 	wngl = vec3_sub(wngl, vec3_mulf(face->normal, vec3_distance_to_plane(wngl, face_point, face->normal)));
 	wngr = vec3_sub(wngr, vec3_mulf(face->normal, vec3_distance_to_plane(wngr, face_point, face->normal)));
 	
-	rgba_t color = rgba(0 , 0 , 0, 128);
+	// rgba_t color = rgba(0 , 0 , 0, 128);
+	rgba_t color = rgba(0 , 0 , 0, 8);
 	render_push_tris((tris_t) {
 		.vertices = {
 			{
@@ -1060,6 +1071,7 @@ void ship_draw_shadow(ship_t *self) {
 			},
 		}
 	}, self->shadow_texture);
+	}
 }
 
 void ship_update_unit_vectors(ship_t *self) {

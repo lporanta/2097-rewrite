@@ -414,7 +414,7 @@ save_t save = {
 	.fullscreen = false,
 	.screen_res = 0,
 	.post_effect = 0,
-	.dynamic_lighting = false,
+	// .dynamic_lighting = false,
 	.psx_wobble = false,
 	.screen_shake = true,
 

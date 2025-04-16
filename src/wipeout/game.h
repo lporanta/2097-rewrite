@@ -249,7 +249,7 @@ typedef struct {
 	bool fullscreen;
 	int screen_res;
 	int post_effect;
-	bool dynamic_lighting;
+	// bool dynamic_lighting;
 	bool psx_wobble;
 	bool screen_shake;
 
