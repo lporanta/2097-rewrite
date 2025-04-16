@@ -17,6 +17,7 @@
 #define SCENE_OIL_PUMPS_MAX 2
 #define SCENE_RED_LIGHTS_MAX 4
 #define SCENE_STANDS_MAX 20
+#define SCENE_CAMERAS_MAX 40
 
 static Object *scene_objects;
 static Object *sky_object;
@@ -31,6 +32,10 @@ static int oil_pumps_len;
 static Object *red_lights[SCENE_RED_LIGHTS_MAX];
 static int red_lights_len;
 
+static Object *cameras[SCENE_CAMERAS_MAX];
+static int cameras_len;
+
+// stand means spectators/crowd
 typedef struct {
 	sfx_t *sfx;
 	vec3_t pos;
@@ -47,6 +52,7 @@ static struct {
 
 void scene_pulsate_red_light(Object *obj);
 void scene_move_oil_pump(Object *obj);
+void scene_move_cameras(Object *obj);
 void scene_update_aurora_borealis(void);
 
 void scene_load(const char *base_path, float sky_y_offset) {
@@ -60,12 +66,13 @@ void scene_load(const char *base_path, float sky_y_offset) {
 	// Collect all objects that need to be updated each frame
 	start_booms_len = 0;
 	oil_pumps_len = 0;
+	cameras_len = 0;
 	red_lights_len = 0;
 	stands_len = 0;
 
 	Object *obj = scene_objects;
 	while (obj) {
-		// printf("load obj: %s (%d, %d, %d)\n", obj->name, obj->origin.x, obj->origin.y, obj->origin.z);
+		printf("load obj: %s (%d, %d, %d)\n", obj->name, obj->origin.x, obj->origin.y, obj->origin.z);
 		mat4_set_translation(&obj->mat, obj->origin);
 
 		if (str_starts_with(obj->name, "start")) {
@@ -88,6 +95,11 @@ void scene_load(const char *base_path, float sky_y_offset) {
 			error_if(stands_len >= SCENE_STANDS_MAX, "SCENE_STANDS_MAX reached");
 			stands[stands_len++] = (scene_stand_t){.sfx = NULL, .pos = obj->origin};
 		}
+		// else if (str_starts_with(obj->name, "camera")) {
+		else if (str_starts_with(obj->name, "camera")) {
+			error_if(cameras_len >= SCENE_CAMERAS_MAX, "SCENE_CAMERAS_MAX reached");
+			cameras[cameras_len++] = obj;
+		}
 		obj = obj->next;
 	}
 
@@ -99,6 +111,10 @@ void scene_init(void) {
 	for (int i = 0; i < stands_len; i++) {
 		stands[i].sfx = sfx_reserve_loop(SFX_CROWD);
 	}
+	// for (int i = 0; i < cameras_len; i++) {
+	// 	cameras[i]->mat = mat4_identity();
+	// 	mat4_set_translation(&cameras[i]->mat, cameras[i]->origin);
+	// }
 }
 
 void scene_update(void) {
@@ -107,6 +123,9 @@ void scene_update(void) {
 	}
 	for (int i = 0; i < oil_pumps_len; i++) {
 		scene_move_oil_pump(oil_pumps[i]);
+	}
+	for (int i = 0; i < cameras_len; i++) {
+		scene_move_cameras(cameras[i]);
 	}
 	for (int i = 0; i < stands_len; i++) {
 		sfx_set_position(stands[i].sfx, stands[i].pos, vec3(0, 0, 0), 0.4);
@@ -196,6 +215,30 @@ void scene_pulsate_red_light(Object *obj) {
 
 void scene_move_oil_pump(Object *pump) {
 	mat4_set_yaw_pitch_roll(&pump->mat, vec3(sin(system_cycle_time() * 0.125 * M_PI * 2), 0, 0));
+}
+
+void scene_move_cameras(Object *cam) {
+	vec3_t target = vec3_sub(g.ships[g.pilot].position, cam->origin);
+	float height = sqrt(target.x * target.x + target.z * target.z);
+	float cam_angle_x = -atan2(target.y, height);
+	float cam_angle_y = -atan2(target.x, target.z);
+	mat4_set_translation(
+		&cam->mat,
+		vec3(
+			cam->origin.x,
+			cam->origin.y - 150 - sin(system_cycle_time() * 0.5 * M_PI * 2) * 300,
+			cam->origin.z
+		)
+	);
+	mat4_set_yaw_pitch_roll(&cam->mat, vec3(0, sin(system_cycle_time() * 0.125 * M_PI * 2), 0));
+	mat4_set_yaw_pitch_roll(
+		&cam->mat,
+		vec3_wrap_angle(vec3(
+			-cam_angle_x + sin(system_cycle_time() * 0.125 * M_PI * 2) * 0.1,
+			M_PI + cam_angle_y + sin(system_cycle_time() * 0.145 * M_PI * 2) * 0.1,
+			0
+		)
+	));
 }
 
 void scene_init_aurora_borealis(void) {
