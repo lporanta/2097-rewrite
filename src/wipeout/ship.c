@@ -37,8 +37,6 @@ void ships_load(void) {
 
 		ship_model = ship_model->next;
 		collision_model = collision_model->next;
-
-		ship_init_exhaust_plume(&g.ships[ship_index]);
 	}
 
 	error_if(object_index != len(g.ships), "Expected %ld ship models, got %d", len(g.ships), object_index);
@@ -154,12 +152,6 @@ void ships_update(void) {
 				g.ships[g.race_ranks[i].pilot].position_rank = i + 1;
 			}
 		}
-	}
-}
-
-void ships_reset_exhaust_plumes(void) {
-	for (int i = 0; i < len(g.ships); i++) {
-		ship_reset_exhaust_plume(&g.ships[i]);
 	}
 }
 
@@ -299,145 +291,6 @@ void ship_init(ship_t *self, section_t *section, int pilot, int inv_start_rank) 
 	section_t *next = section->next;
 	vec3_t direction = vec3_sub(next->center, section->center);
 	self->angle.y = -atan2(direction.x, direction.z);
-}
-
-void ship_init_exhaust_plume(ship_t *self) {
-	int16_t indices[64];
-	int16_t indices_len = 0;
-
-	Prm prm = {.primitive = self->model->primitives};
-
-	for (int i = 0; i < self->model->primitives_len; i++) {
-		switch (prm.f3->type) {
-		case PRM_TYPE_F3 :
-			if (flags_is(prm.f3->flag, PRM_SHIP_ENGINE)) {
-				die("F3 ::SE marked polys should be ft3's");
-			}
-			prm.f3 += 1;
-			break;
-
-		case PRM_TYPE_F4 :
-			if (flags_is(prm.f4->flag, PRM_SHIP_ENGINE)) {
-				die("F4 ::SE marked polys should be ft3's");
-			}
-			prm.f4 += 1;
-			break;
-
-		case PRM_TYPE_FT3 :
-			if (flags_is(prm.ft3->flag, PRM_SHIP_ENGINE)) {
-				indices[indices_len++] = prm.ft3->coords[0];
-				indices[indices_len++] = prm.ft3->coords[1];
-				indices[indices_len++] = prm.ft3->coords[2];
-
-				flags_add(prm.ft3->flag, PRM_TRANSLUCENT);
-				prm.ft3->color.r = 240; // 180;
-				prm.ft3->color.g = 240; // 97 ;
-				prm.ft3->color.b = 240; // 120;
-				prm.ft3->color.a = 140; // 140;
-			}
-			prm.ft3 += 1;
-			break;
-
-		case PRM_TYPE_FT4 :
-			if (flags_is(prm.ft4->flag, PRM_SHIP_ENGINE)) {
-				die("FT4 ::SE marked polys should be ft3's");
-			}
-			prm.ft4 += 1;
-			break;
-
-		case PRM_TYPE_G3 :
-			if (flags_is(prm.g3->flag, PRM_SHIP_ENGINE)) {
-				die("G3 ::SE marked polys should be ft3's");
-			}
-			prm.g3 += 1;
-			break;
-
-		case PRM_TYPE_G4 :
-			if (flags_is(prm.g4->flag, PRM_SHIP_ENGINE)) {
-				die("G4 ::SE marked polys should be ft3's");
-			}
-			prm.g4 += 1;
-			break;
-
-		case PRM_TYPE_GT3 :
-			if (flags_is(prm.gt3->flag, PRM_SHIP_ENGINE)) {
-				indices[indices_len++] = prm.gt3->coords[0];
-				indices[indices_len++] = prm.gt3->coords[1];
-				indices[indices_len++] = prm.gt3->coords[2];
-
-				flags_add(prm.gt3->flag, PRM_TRANSLUCENT);
-				for (int j = 0; j < 3; j++) {
-					prm.gt3->color[j].r = 240;//180;
-					prm.gt3->color[j].g = 0;//97;
-					prm.gt3->color[j].b = 240;//120;
-					prm.gt3->color[j].a = 140;
-				}
-			}
-			prm.gt3 += 1;
-			break;
-
-		case PRM_TYPE_GT4 :
-			if (flags_is(prm.gt4->flag, PRM_SHIP_ENGINE)) {
-				die("GT4 ::SE marked polys should be ft3's");
-			}
-			prm.gt4 += 1;
-			break;
-
-		default :
-			die("cone.c::InitCone:Bad primitive type %x\n", prm.f3->type);
-			break;
-		}
-	}
-
-
-	// get out the center vertex
-
-	self->exhaust_plume[0].v = NULL;
-	self->exhaust_plume[1].v = NULL;
-	self->exhaust_plume[2].v = NULL;
-
-	int shared[3] = {-1, -1, -1};
-	int booster = 0;
-	for (int i = 0; (i < indices_len) && (booster < 3); i++) {
-		int similar = 0;
-		for (int j = 0; j < indices_len; j++) {
-			if (indices[i] == indices[j]) {
-				similar++;
-				if (similar > 3) {
-					int found = 0;
-					for (int k = 0; k < 3; k++) {
-						if (shared[k] == indices[i]) {
-							found = 1;
-						}
-					}
-
-					if (!found) {
-						shared[booster] = indices[i];
-						booster++;
-					}
-				}
-			}
-		}
-	}
-
-	for (int j = 0; j < 3; j++) {
-		if (shared[j] != -1) {
-			self->exhaust_plume[j].v = &self->model->vertices[shared[j]];
-			self->exhaust_plume[j].initial = self->model->vertices[shared[j]];
-		}
-	}
-
-}
-
-void ship_reset_exhaust_plume(ship_t* self)
-{
-	for (int i = 0; i < 3; i++) {
-		if (self->exhaust_plume[i].v != NULL) {
-			self->exhaust_plume[i].v->z = self->exhaust_plume[i].initial.z;
-			self->exhaust_plume[i].v->x = self->exhaust_plume[i].initial.x;
-			self->exhaust_plume[i].v->y = self->exhaust_plume[i].initial.y;
-		}
-	}
 }
 
 void ship_draw(ship_t *self) {
@@ -1308,11 +1161,11 @@ void ship_update(ship_t *self) {
 	// 		face->tris[0].vertices[0].color.a
 	// 		);
 	// }
-	if (self->pilot == g.pilot) {
-		printf("ship current face flags: %d\n", face->flags);
-		printf("ship current section flags: %d\n", g.ships[g.pilot].section->flags);
-		printf("ship current section num: %d\n", g.ships[g.pilot].section->num);
-	}
+	// if (self->pilot == g.pilot) {
+	// 	printf("ship current face flags: %d\n", face->flags);
+	// 	printf("ship current section flags: %d\n", g.ships[g.pilot].section->flags);
+	// 	printf("ship current section num: %d\n", g.ships[g.pilot].section->num);
+	// }
 
 	// Collect powerup
 	if (
@@ -1350,28 +1203,6 @@ void ship_update(ship_t *self) {
 	
 	// Call the active player/ai update function
 	(self->update_func)(self);
-
-	// Animate the exhaust plume
-	int exhaust_len;
-
-	if (self->pilot == g.pilot) {
-		// get the z exhaust_len related to speed or thrust
-		exhaust_len = self->thrust_mag * 0.0625;
-		exhaust_len += self->speed * 0.00390625;
-		exhaust_len += clamp(vec3_len(self->thrust) * 0.0001, 0.0, 0.00390625);
-	}
-	else {
-		// for remote ships the z exhaust_len is a constant
-		exhaust_len = 150;
-	}
-
-	for (int i = 0; i < 3; i++) {
-		if (self->exhaust_plume[i].v != NULL) {
-			self->exhaust_plume[i].v->z = self->exhaust_plume[i].initial.z - exhaust_len + (rand_int(-16383, 16383) >> 9);
-			self->exhaust_plume[i].v->x = self->exhaust_plume[i].initial.x + (rand_int(-16383, 16383) >> 11);
-			self->exhaust_plume[i].v->y = self->exhaust_plume[i].initial.y + (rand_int(-16383, 16383) >> 11);
-		}
-	}
 
 	mat4_set_translation(&self->mat, self->position);
 	mat4_set_yaw_pitch_roll(&self->mat, self->angle);

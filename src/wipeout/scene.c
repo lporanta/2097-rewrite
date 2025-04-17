@@ -71,7 +71,7 @@ void scene_load(const char *base_path, float sky_y_offset) {
 
 	Object *obj = scene_objects;
 	while (obj) {
-		// printf("load obj: %s (%d, %d, %d)\n", obj->name, obj->origin.x, obj->origin.y, obj->origin.z);
+		printf("load obj: %s (%d, %d, %d)\n", obj->name, obj->origin.x, obj->origin.y, obj->origin.z);
 		mat4_set_translation(&obj->mat, obj->origin);
 
 		if (str_starts_with(obj->name, "start")) {
@@ -94,7 +94,6 @@ void scene_load(const char *base_path, float sky_y_offset) {
 			error_if(stands_len >= SCENE_STANDS_MAX, "SCENE_STANDS_MAX reached");
 			stands[stands_len++] = (scene_stand_t){.sfx = NULL, .pos = obj->origin};
 		}
-		// else if (str_starts_with(obj->name, "camera")) {
 		else if (str_starts_with(obj->name, "camera")) {
 			error_if(cameras_len >= SCENE_CAMERAS_MAX, "SCENE_CAMERAS_MAX reached");
 			cameras[cameras_len++] = obj;
@@ -227,7 +226,7 @@ void scene_move_cameras(Object *cam) {
 		&cam->mat,
 		vec3(
 			cam->origin.x,
-			cam->origin.y - 150 - sin(y_offset + system_cycle_time() * 0.5 * M_PI * 2) * 200,
+			cam->origin.y - 150 - sin(y_offset + system_cycle_time() * 0.5 * M_PI * 2) * 100,
 			cam->origin.z
 		)
 	);

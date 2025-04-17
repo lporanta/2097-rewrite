@@ -62,7 +62,7 @@
 #define SHIP_TRACK_MAGNET	100 // 64
 #define SHIP_TRACK_FLOAT 	256
 
-#define NUM_SHIP_TRAIL_POINTS 	12
+#define NUM_SHIP_TRAIL_POINTS 	10
 
 
 #define SHIP_PITCH_ACCEL    NTSC_ACCELERATION(ANGLE_NORM_TO_RADIAN(FIXED_TO_FLOAT(PITCH_VELOCITY(30))))
@@ -144,10 +144,10 @@ typedef struct ship_t {
 	Object *collision_model;
 	uint16_t shadow_texture;
 
-	struct {
-		vec3_t *v;
-		vec3_t initial;
-	} exhaust_plume[3];
+	// struct {
+	// 	vec3_t *v;
+	// 	vec3_t initial;
+	// } exhaust_plume[3];
 
 	// Control Routines
 	vec3_t (*update_strat_func)(struct ship_t *, track_face_t *);
@@ -174,11 +174,11 @@ void ships_load(void);
 void ships_init(section_t *section);
 void ships_draw(void);
 void ships_update(void);
-void ships_reset_exhaust_plumes(void);
+// void ships_reset_exhaust_plumes(void);
 
 void ship_init(ship_t *self, section_t *section, int pilot, int position);
-void ship_init_exhaust_plume(ship_t *self);
-void ship_reset_exhaust_plume(ship_t *self);
+// void ship_init_exhaust_plume(ship_t *self);
+// void ship_reset_exhaust_plume(ship_t *self);
 void ship_draw(ship_t *self);
 void ship_draw_shadow(ship_t *self);
 void ship_draw_flare(ship_t *self);

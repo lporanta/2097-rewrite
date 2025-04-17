@@ -406,9 +406,9 @@ void ship_player_update_race(ship_t *self) {
 			height = 50;
 		}
 
-		if (height < 100) {
-			self->velocity = vec3_reflect(self->velocity, face->normal, 0.5);
-		}
+		// if (height < 100) {
+		// 	self->velocity = vec3_reflect(self->velocity, face->normal, 0.5);
+		// }
 
 		// Calculate acceleration
 		float brake = (self->brake_left + self->brake_right);
@@ -535,11 +535,11 @@ void ship_player_update_race(ship_t *self) {
 	// if (self->section->junction)
 	// 	printf("player section: %d\n", self->section->junction->num);
 
-	if (flags_is(self->flags, SHIP_ON_PIT_STOP)) {
-		printf("pit stop!\n");
-	} else {
-		printf("not pit stop\n");
-	}
+	// if (flags_is(self->flags, SHIP_ON_PIT_STOP)) {
+	// 	printf("pit stop!\n");
+	// } else {
+	// 	printf("not pit stop\n");
+	// }
 
 }
 
