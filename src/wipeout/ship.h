@@ -23,6 +23,7 @@
 #define SHIP_ELECTROED			(1<<15)
 #define SHIP_REVCONNED			(1<<16)
 #define SHIP_SPECIALED			(1<<17)
+#define SHIP_ON_PIT_STOP		(1<<18)
 
 
 // Timings

@@ -1308,6 +1308,11 @@ void ship_update(ship_t *self) {
 	// 		face->tris[0].vertices[0].color.a
 	// 		);
 	// }
+	if (self->pilot == g.pilot) {
+		printf("ship current face flags: %d\n", face->flags);
+		printf("ship current section flags: %d\n", g.ships[g.pilot].section->flags);
+		printf("ship current section num: %d\n", g.ships[g.pilot].section->num);
+	}
 
 	// Collect powerup
 	if (
@@ -1330,6 +1335,15 @@ void ship_update(ship_t *self) {
 		else {
 			self->weapon_type = 1;
 		}
+	}
+
+	// Pit stop
+	if (flags_is(face->flags, FACE_PIT_STOP) && face->flags>0) {
+	// TODO: using FACE_PIT_STOP messes up checkpoints
+	// if (flags_is(face->flags, 321) || flags_is(face->flags, 325)) {
+		flags_add(self->flags, SHIP_ON_PIT_STOP);
+	} else {
+		flags_rm(self->flags, SHIP_ON_PIT_STOP);
 	}
 
 	self->last_impact_time += system_tick();

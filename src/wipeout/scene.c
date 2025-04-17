@@ -12,7 +12,6 @@
 #include "object.h"
 #include "game.h"
 
-
 #define SCENE_START_BOOMS_MAX 4
 #define SCENE_OIL_PUMPS_MAX 2
 #define SCENE_RED_LIGHTS_MAX 4
@@ -72,7 +71,7 @@ void scene_load(const char *base_path, float sky_y_offset) {
 
 	Object *obj = scene_objects;
 	while (obj) {
-		printf("load obj: %s (%d, %d, %d)\n", obj->name, obj->origin.x, obj->origin.y, obj->origin.z);
+		// printf("load obj: %s (%d, %d, %d)\n", obj->name, obj->origin.x, obj->origin.y, obj->origin.z);
 		mat4_set_translation(&obj->mat, obj->origin);
 
 		if (str_starts_with(obj->name, "start")) {
@@ -134,6 +133,7 @@ void scene_update(void) {
 	if (aurora_borealis.enabled) {
 		scene_update_aurora_borealis();
 	}
+	// sky_offset.y = 500 + sin(system_time()) * 500;
 }
 
 void scene_draw(camera_t *camera) {
@@ -222,15 +222,16 @@ void scene_move_cameras(Object *cam) {
 	float height = sqrt(target.x * target.x + target.z * target.z);
 	float cam_angle_x = -atan2(target.y, height);
 	float cam_angle_y = -atan2(target.x, target.z);
+	float y_offset = cam->origin.z / 50;
 	mat4_set_translation(
 		&cam->mat,
 		vec3(
 			cam->origin.x,
-			cam->origin.y - 150 - sin(system_cycle_time() * 0.5 * M_PI * 2) * 300,
+			cam->origin.y - 150 - sin(y_offset + system_cycle_time() * 0.5 * M_PI * 2) * 200,
 			cam->origin.z
 		)
 	);
-	mat4_set_yaw_pitch_roll(&cam->mat, vec3(0, sin(system_cycle_time() * 0.125 * M_PI * 2), 0));
+	// mat4_set_yaw_pitch_roll(&cam->mat, vec3(0, sin(system_cycle_time() * 0.125 * M_PI * 2), 0));
 	mat4_set_yaw_pitch_roll(
 		&cam->mat,
 		vec3_wrap_angle(vec3(

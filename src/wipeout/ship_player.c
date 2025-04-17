@@ -531,6 +531,16 @@ void ship_player_update_race(ship_t *self) {
 	self->last_boost_rumble += system_tick();
 
 	ship_player_update_sfx(self);
+
+	// if (self->section->junction)
+	// 	printf("player section: %d\n", self->section->junction->num);
+
+	if (flags_is(self->flags, SHIP_ON_PIT_STOP)) {
+		printf("pit stop!\n");
+	} else {
+		printf("not pit stop\n");
+	}
+
 }
 
 

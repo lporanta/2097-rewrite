@@ -46,7 +46,7 @@ void track_load(const char *base_path) {
 	section_t *s = g.track.sections;
 	section_t *j = NULL;
 
-	// Nummerate all sections; take care to give both stretches at a junction
+	// Numerate all sections; take care to give both stretches at a junction
 	// the same numbers.
 	int num = 0;
 	do {
@@ -54,6 +54,14 @@ void track_load(const char *base_path) {
 		if (s->junction) { // start junction
 			j = s->junction;
 			do {
+				// This is how we get and flag the pit stop faces
+				// TODO: what is this 32
+				track_face_t *face = track_section_get_base_face(j);
+				if (flags_is(j->flags, 32) && flags_is(face->flags, FACE_PICKUP_COLLECTED)) {
+					flags_add(face->flags, FACE_PIT_STOP);
+					face++;
+					flags_add(face->flags, FACE_PIT_STOP);
+				}
 				j->num = num++;
 				j = j->next;
 			} while (!j->junction); // end junction
@@ -77,7 +85,12 @@ void track_load(const char *base_path) {
 			
 			if (flags_is(face->flags, FACE_BOOST)) {
 				track_face_set_color(face, rgba(0, 0, 255, 255));
+			} else if (flags_is(face->flags, FACE_PIT_STOP) && face->flags>0) {
+			// TODO: using FACE_PIT_STOP messes up checkpoints
+			// } else if (flags_is(face->flags, 321) || flags_is(face->flags, 325)) {
+				track_face_set_color(face, rgba(255, 0, 0, 255));
 			}
+
 			face++;
 		}
 	}
