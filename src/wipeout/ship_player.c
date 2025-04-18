@@ -320,7 +320,7 @@ void ship_player_update_race(ship_t *self) {
 	// Physics
 
 	// Calculate thrust vector along principle axis of ship
-	self->thrust = vec3_mulf(self->dir_forward, self->thrust_mag * 64); //64
+	self->thrust = vec3_mulf(self->dir_forward, self->thrust_mag * 64.0); //64
 	self->speed = vec3_len(self->velocity);
 	vec3_t forward_velocity = vec3_mulf(self->dir_forward, self->speed);
 
@@ -406,9 +406,10 @@ void ship_player_update_race(ship_t *self) {
 			height = 50;
 		}
 
-		// if (height < 100) {
-		// 	self->velocity = vec3_reflect(self->velocity, face->normal, 0.5);
-		// }
+		if (height < 100) {
+			// to reduce bounce
+			self->velocity = vec3_reflect(self->velocity, face->normal, 0.2);
+		}
 
 		// Calculate acceleration
 		float brake = (self->brake_left + self->brake_right);
@@ -540,7 +541,7 @@ void ship_player_update_race(ship_t *self) {
 	// } else {
 	// 	printf("not pit stop\n");
 	// }
-	printf("player y: %f\n", self->position.y);
+	// printf("player y: %f\n", self->position.y);
 
 }
 

@@ -200,7 +200,6 @@ void ships_draw(void) {
 		}
 		// required or player flare ugly and race crashes
 		ship_update_unit_vectors(&g.ships[i]);
-		// ship_draw_flare(&g.ships[i]);
 		ship_draw_flare_psx(&g.ships[i]);
 		if (
 			i == g.pilot
@@ -499,8 +498,9 @@ void ship_draw_flare_psx(ship_t *self) {
 	//clamp(vec3_len(self->thrust)/1550.0,0,255)
 
 	// rgba_t color = rgba(0,0,255,clamp(((1+sin(system_time()*20.0))/2.0)*vec3_len(self->thrust)/155.0,90,255));
-	float thrust_factor = clamp(vec3_len(self->thrust)/20000.0,0,1.0);
-	if (self->pilot != g.pilot) {
+	// float thrust_factor = clamp(vec3_len(self->thrust))/20000.0,0,1.0);
+	float thrust_factor = clamp(self->thrust_mag-10,0,300.0)/300.0;
+	if (self->pilot != g.pilot || self->lap >= NUM_LAPS) {
 		thrust_factor = 1.0;
 	}
 	thrust_factor += clamp(self->angle.x*3, -0.8, 0.0);
@@ -754,15 +754,9 @@ void ship_draw_flare_psx(ship_t *self) {
 
 void ship_draw_player_trail(ship_t *self) {
 	// TODO: shimmering? Check if under the ship and add M_PI offset?
-	//clamp(vec3_len(self->thrust)/1550.0,0,255)
+	// float speed_factor = clamp(self->thrust_mag/200.0,0,1.0)*clamp((self->speed-1000)/20000.0,0,1.0);
+	float speed_factor = clamp((self->speed-1000)/1000.0,0,1.0);
 
-	// rgba_t color = rgba(0,0,255,clamp(((1+sin(system_time()*20.0))/2.0)*vec3_len(self->thrust)/155.0,90,255));
-	// uint16_t random_bright0 = 1 + (int)(system_time() * 30) % 40;
-	// uint16_t random_bright1 = 1 + (int)(system_time() * 30) % 53;
-	float speed_factor = clamp(self->thrust_mag/200.0,0,1.0)*clamp((self->speed-1000)/20000.0,0,1.0);
-	// if (self->pilot != g.pilot) {
-	// 	thrust_factor = 1.0;
-	// }
 	mat4_t *m = &mat4_identity();
 	mat4_set_yaw_pitch_roll(m, vec3(self->angle.x, self->angle.y - 0.10*self->angle.z, 1.0*self->angle.z));
 	mat4_set_translation(m, vec3_sub(vec3_add(self->position, vec3_mulf(self->dir_up, 10)), vec3_mulf(self->dir_forward, 430))); //435
@@ -774,7 +768,7 @@ void ship_draw_player_trail(ship_t *self) {
 	render_set_depth_offset(0.0);
 
 	uint16_t half_width = 40;
-	uint16_t length = 60 + speed_factor * 120; //120
+	uint16_t length = 60 + speed_factor * 160; //120
 	// uint16_t center_alpha = speed_factor * 250; // + ((sin(system_time()*5)+1)/2.0) * 50;
 	// uint16_t outer_rg;
 	// bool hl_upper;

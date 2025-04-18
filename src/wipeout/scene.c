@@ -17,6 +17,7 @@
 #define SCENE_RED_LIGHTS_MAX 4
 #define SCENE_STANDS_MAX 20
 #define SCENE_CAMERAS_MAX 40
+#define SCENE_FANS_MAX 20
 
 static Object *scene_objects;
 static Object *sky_object;
@@ -34,6 +35,9 @@ static int red_lights_len;
 
 static Object *cameras[SCENE_CAMERAS_MAX];
 static int cameras_len;
+
+static Object *fans[SCENE_FANS_MAX];
+static int fans_len;
 
 // stand means spectators/crowd
 typedef struct {
@@ -65,10 +69,11 @@ void scene_load(const char *base_path, float sky_y_offset) {
 	cameras_len = 0;
 	red_lights_len = 0;
 	stands_len = 0;
+	fans_len = 0;
 
 	Object *obj = scene_objects;
 	while (obj) {
-		printf("load obj: %s (%d, %d, %d)\n", obj->name, obj->origin.x, obj->origin.y, obj->origin.z);
+		printf("load obj: %s (%f, %f, %f)\n", obj->name, obj->origin.x, obj->origin.y, obj->origin.z);
 		mat4_set_translation(&obj->mat, obj->origin);
 
 		if (str_starts_with(obj->name, "start")) {
@@ -94,6 +99,10 @@ void scene_load(const char *base_path, float sky_y_offset) {
 		else if (str_starts_with(obj->name, "camera")) {
 			error_if(cameras_len >= SCENE_CAMERAS_MAX, "SCENE_CAMERAS_MAX reached");
 			cameras[cameras_len++] = obj;
+		}
+		else if (str_starts_with(obj->name, "fan")) {
+			error_if(cameras_len >= SCENE_CAMERAS_MAX, "SCENE_FANS_MAX reached");
+			fans[fans_len++] = obj;
 		}
 		obj = obj->next;
 	}
@@ -130,9 +139,22 @@ void scene_update(void) {
 		float sky_swing_factor = clamp(-g.ships[g.pilot].position.y/22000, 0.0, 1.0);
 		sky_offset = vec3(
 			sky_offset_initial.x,
-			sky_offset_initial.y - sin(system_cycle_time() * 0.5 * M_PI * 2) * sky_swing_factor * 2048,
+			sky_offset_initial.y - sin(system_cycle_time() * 0.5 * M_PI * 2) * sky_swing_factor * 1024,
 			sky_offset_initial.z
 		);
+	}
+	else if (g.circut == CIRCUT_TALONS_REACH) {
+		for (int i = 0; i < fans_len; i++) {
+			// fan origins:
+			// starting line fan (-40062.000000, -5076.000000, -4510.000000)
+			// pit stop fan (-60544.000000, -2576.000000, -23654.000000)
+			if (fans[i]->origin.y == -2576.0) {
+				// this fixes the pit stop fan orientation
+				mat4_set_yaw_pitch_roll(&fans[i]->mat, vec3(0, 0.2, -system_time()));
+			} else {
+				mat4_set_yaw_pitch_roll(&fans[i]->mat, vec3(0, 0, -system_time()));
+			}
+		}
 	}
 }
 
