@@ -503,7 +503,7 @@ void ship_draw_flare_psx(ship_t *self) {
 	if (self->pilot != g.pilot) {
 		thrust_factor = 1.0;
 	}
-	thrust_factor += clamp(self->angle.x*2, -0.8, 0.0);
+	thrust_factor += clamp(self->angle.x*3, -0.8, 0.0);
 	mat4_t m = mat4_identity();
 	mat4_set_yaw_pitch_roll(&m, vec3_add(g.camera.angle, vec3(0,0,M_PI / 2)));
 	mat4_set_translation(&m, vec3_sub(vec3_add(self->position, vec3_mulf(self->dir_up, 10)), vec3_mulf(self->dir_forward, 430)));
@@ -544,10 +544,10 @@ void ship_draw_flare_psx(ship_t *self) {
 
 	// STAR
 	// long axis
-	uint16_t long_length = 180;
-	uint16_t short_length = 90;
-	uint16_t half_width = 8;
-	uint16_t half_width_tip = 4;
+	uint16_t long_length = 200;
+	uint16_t short_length = 100;
+	uint16_t half_width = 10;
+	uint16_t half_width_tip = 6;
 	uint16_t inner_alpha = 170;
 	vec3_t offset = vec3(0, 0, M_PI / 4);
 	
@@ -564,7 +564,8 @@ void ship_draw_flare_psx(ship_t *self) {
 		render_push_tris((tris_t) {
 			.vertices = {
 				{
-					.pos = {0, -thrust_factor*half_width, 0},
+					// .pos = {0, -thrust_factor*half_width, 0},
+					.pos = {0, -half_width, 0},
 					.color = rgba(80,80,255,0)
 				},
 				{
@@ -572,7 +573,8 @@ void ship_draw_flare_psx(ship_t *self) {
 					.color = rgba(80,80,255,inner_alpha)
 				},
 				{
-					.pos = {thrust_factor*long_length, -thrust_factor*half_width_tip, 0},
+					// .pos = {thrust_factor*long_length, -thrust_factor*half_width_tip, 0},
+					.pos = {thrust_factor*long_length, -half_width_tip, 0},
 					.color = rgba(80,80,255,0)
 				},
 			}
@@ -588,7 +590,8 @@ void ship_draw_flare_psx(ship_t *self) {
 					.color = rgba(80,80,255,0)
 				},
 				{
-					.pos = {thrust_factor*long_length, -thrust_factor*half_width_tip, 0},
+					// .pos = {thrust_factor*long_length, -thrust_factor*half_width_tip, 0},
+					.pos = {thrust_factor*long_length, -half_width_tip, 0},
 					.color = rgba(80,80,255,0)
 				},
 			}
@@ -601,11 +604,13 @@ void ship_draw_flare_psx(ship_t *self) {
 					.color = rgba(80,80,255,inner_alpha)
 				},
 				{
-					.pos = {0, thrust_factor*half_width, 0},
+					// .pos = {0, thrust_factor*half_width, 0},
+					.pos = {0, half_width, 0},
 					.color = rgba(80,80,255,0)
 				},
 				{
-					.pos = {thrust_factor*long_length, thrust_factor*half_width_tip, 0},
+					// .pos = {thrust_factor*long_length, thrust_factor*half_width_tip, 0},
+					.pos = {thrust_factor*long_length, half_width_tip, 0},
 					.color = rgba(80,80,255,0)
 				},
 			}
@@ -617,7 +622,8 @@ void ship_draw_flare_psx(ship_t *self) {
 					.color = rgba(80,80,255,inner_alpha)
 				},
 				{
-					.pos = {thrust_factor*long_length, thrust_factor*half_width_tip, 0},
+					// .pos = {thrust_factor*long_length, thrust_factor*half_width_tip, 0},
+					.pos = {thrust_factor*long_length, half_width_tip, 0},
 					.color = rgba(80,80,255,0)
 				},
 				{
@@ -644,7 +650,8 @@ void ship_draw_flare_psx(ship_t *self) {
 		render_push_tris((tris_t) {
 			.vertices = {
 				{
-					.pos = {0, -thrust_factor*half_width, 0},
+					// .pos = {0, -thrust_factor*half_width, 0},
+					.pos = {0, -half_width, 0},
 					.color = rgba(80,80,255,0)
 				},
 				{
@@ -652,7 +659,8 @@ void ship_draw_flare_psx(ship_t *self) {
 					.color = rgba(80,80,255,inner_alpha)
 				},
 				{
-					.pos = {thrust_factor*short_length, -thrust_factor*half_width_tip, 0},
+					// .pos = {thrust_factor*short_length, -thrust_factor*half_width_tip, 0},
+					.pos = {thrust_factor*short_length, -half_width_tip, 0},
 					.color = rgba(80,80,255,0)
 				},
 			}
@@ -668,7 +676,8 @@ void ship_draw_flare_psx(ship_t *self) {
 					.color = rgba(80,80,255,0)
 				},
 				{
-					.pos = {thrust_factor*short_length, -thrust_factor*half_width_tip, 0},
+					// .pos = {thrust_factor*short_length, -thrust_factor*half_width_tip, 0},
+					.pos = {thrust_factor*short_length, -half_width_tip, 0},
 					.color = rgba(80,80,255,0)
 				},
 			}
@@ -681,11 +690,13 @@ void ship_draw_flare_psx(ship_t *self) {
 					.color = rgba(80,80,255,inner_alpha)
 				},
 				{
-					.pos = {0, thrust_factor*half_width, 0},
+					// .pos = {0, thrust_factor*half_width, 0},
+					.pos = {0, half_width, 0},
 					.color = rgba(80,80,255,0)
 				},
 				{
-					.pos = {thrust_factor*short_length, thrust_factor*half_width_tip, 0},
+					// .pos = {thrust_factor*short_length, thrust_factor*half_width_tip, 0},
+					.pos = {thrust_factor*short_length, half_width_tip, 0},
 					.color = rgba(80,80,255,0)
 				},
 			}
@@ -697,7 +708,8 @@ void ship_draw_flare_psx(ship_t *self) {
 					.color = rgba(80,80,255,inner_alpha)
 				},
 				{
-					.pos = {thrust_factor*short_length, thrust_factor*half_width_tip, 0},
+					// .pos = {thrust_factor*short_length, thrust_factor*half_width_tip, 0},
+					.pos = {thrust_factor*short_length, half_width_tip, 0},
 					.color = rgba(80,80,255,0)
 				},
 				{

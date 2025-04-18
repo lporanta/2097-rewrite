@@ -49,11 +49,6 @@ static struct {
 	int16_t grey_coords[80];	
 } aurora_borealis;
 
-void scene_pulsate_red_light(Object *obj);
-void scene_move_oil_pump(Object *obj);
-void scene_move_cameras(Object *obj);
-void scene_update_aurora_borealis(void);
-
 void scene_load(const char *base_path, float sky_y_offset) {
 	texture_list_t scene_textures = image_get_compressed_textures(get_path(base_path, "scene.cmp"));
 	scene_objects = objects_load(get_path(base_path, "scene.prm"), scene_textures);
