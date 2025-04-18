@@ -65,7 +65,7 @@ const game_def_t def = {
 			.attributes = {
 				[RACE_CLASS_VENOM]  = {.mass = 150, .thrust_max =  790, .resistance = 140, .turn_rate = TURN_ACCEL(160), .turn_rate_max = TURN_VEL(2560), .skid = 12},
 				// [RACE_CLASS_RAPIER] = {.mass = 150, .thrust_max = 1200, .resistance = 140, .turn_rate = TURN_ACCEL(160), .turn_rate_max = TURN_VEL(2560), .skid = 10},
-				[RACE_CLASS_RAPIER] = {.mass = 150, .thrust_max = 2000, .resistance = 140, .turn_rate = TURN_ACCEL(160), .turn_rate_max = TURN_VEL(2560), .skid = 10},
+				[RACE_CLASS_RAPIER] = {.mass = 150, .thrust_max = 2000, .resistance = 140, .turn_rate = TURN_ACCEL(160), .turn_rate_max = TURN_VEL(2560), .skid = 8},
 			},
 		},
 		[TEAM_AURICOM] = {

@@ -533,6 +533,7 @@ void ship_player_update_race(ship_t *self) {
 
 	ship_player_update_sfx(self);
 
+	// printf("player section: %d\n", self->section->num);
 	// if (self->section->junction)
 	// 	printf("player section: %d\n", self->section->junction->num);
 

@@ -20,9 +20,13 @@
 #define SCENE_FANS_MAX 20
 
 static Object *scene_objects;
+
 static Object *sky_object;
 static vec3_t sky_offset_initial;
 static vec3_t sky_offset;
+
+// TODO: Valparaiso
+// wfall (-79330.000000, -8704.000000, 18960.000000)
 
 static Object *start_booms[SCENE_START_BOOMS_MAX];
 static int start_booms_len;
@@ -53,6 +57,13 @@ static struct {
 	int16_t *coords[80];
 	int16_t grey_coords[80];	
 } aurora_borealis;
+
+static struct {
+	bool triggered;
+	Object *obj;
+	vec3_t offset_initial;
+	vec3_t offset;
+} zeppelin;
 
 void scene_load(const char *base_path, float sky_y_offset) {
 	texture_list_t scene_textures = image_get_compressed_textures(get_path(base_path, "scene.cmp"));
@@ -104,6 +115,12 @@ void scene_load(const char *base_path, float sky_y_offset) {
 			error_if(cameras_len >= SCENE_CAMERAS_MAX, "SCENE_FANS_MAX reached");
 			fans[fans_len++] = obj;
 		}
+		else if (str_starts_with(obj->name, "zeppelin")) {
+			zeppelin.triggered = false;
+			zeppelin.obj = obj;
+			zeppelin.offset_initial = obj->origin;
+			zeppelin.offset = obj->origin;
+		}
 		obj = obj->next;
 	}
 
@@ -139,7 +156,7 @@ void scene_update(void) {
 		float sky_swing_factor = clamp(-g.ships[g.pilot].position.y/22000, 0.0, 1.0);
 		sky_offset = vec3(
 			sky_offset_initial.x,
-			sky_offset_initial.y - sin(system_cycle_time() * 0.5 * M_PI * 2) * sky_swing_factor * 1024,
+			sky_offset_initial.y - sin(system_cycle_time() * 0.5 * M_PI * 2) * sky_swing_factor * 1500,
 			sky_offset_initial.z
 		);
 	}
@@ -154,6 +171,21 @@ void scene_update(void) {
 			} else {
 				mat4_set_yaw_pitch_roll(&fans[i]->mat, vec3(0, 0, -system_time()));
 			}
+		}
+	}
+	else if (g.circut == CIRCUT_GARE_D_EUROPA) {
+		if (g.ships[g.pilot].section->num > 100) {
+			zeppelin.triggered = true;
+		} else {
+			zeppelin.triggered = false;
+		}
+
+		if (zeppelin.triggered) {
+			zeppelin.offset = vec3_add(zeppelin.offset, vec3(0, 0, 4096.0 * system_tick()));
+			mat4_set_translation(&zeppelin.obj->mat, zeppelin.offset);
+		} else {
+			zeppelin.offset = zeppelin.offset_initial;
+			mat4_set_translation(&zeppelin.obj->mat, zeppelin.offset_initial);
 		}
 	}
 }
