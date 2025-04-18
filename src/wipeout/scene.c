@@ -20,6 +20,7 @@
 
 static Object *scene_objects;
 static Object *sky_object;
+static vec3_t sky_offset_initial;
 static vec3_t sky_offset;
 
 static Object *start_booms[SCENE_START_BOOMS_MAX];
@@ -55,7 +56,8 @@ void scene_load(const char *base_path, float sky_y_offset) {
 	
 	texture_list_t sky_textures = image_get_compressed_textures(get_path(base_path, "sky.cmp"));
 	sky_object = objects_load(get_path(base_path, "sky.prm") , sky_textures);
-	sky_offset = vec3(0, sky_y_offset, 0);
+	sky_offset_initial = vec3(0, sky_y_offset, 0);
+	sky_offset = sky_offset_initial;
 
 	// Collect all objects that need to be updated each frame
 	start_booms_len = 0;
@@ -104,10 +106,6 @@ void scene_init(void) {
 	for (int i = 0; i < stands_len; i++) {
 		stands[i].sfx = sfx_reserve_loop(SFX_CROWD);
 	}
-	// for (int i = 0; i < cameras_len; i++) {
-	// 	cameras[i]->mat = mat4_identity();
-	// 	mat4_set_translation(&cameras[i]->mat, cameras[i]->origin);
-	// }
 }
 
 void scene_update(void) {
@@ -127,7 +125,15 @@ void scene_update(void) {
 	if (aurora_borealis.enabled) {
 		scene_update_aurora_borealis();
 	}
-	// sky_offset.y = 500 + sin(system_time()) * 500;
+	if (g.circut == CIRCUT_ODESSA_KEYS) {
+		// highest point is about y:-22000
+		float sky_swing_factor = clamp(-g.ships[g.pilot].position.y/22000, 0.0, 1.0);
+		sky_offset = vec3(
+			sky_offset_initial.x,
+			sky_offset_initial.y - sin(system_cycle_time() * 0.5 * M_PI * 2) * sky_swing_factor * 2048,
+			sky_offset_initial.z
+		);
+	}
 }
 
 void scene_draw(camera_t *camera) {

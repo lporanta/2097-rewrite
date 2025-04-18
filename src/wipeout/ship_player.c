@@ -540,6 +540,7 @@ void ship_player_update_race(ship_t *self) {
 	// } else {
 	// 	printf("not pit stop\n");
 	// }
+	printf("player y: %f\n", self->position.y);
 
 }
 

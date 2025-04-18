@@ -228,13 +228,13 @@ void ship_init(ship_t *self, section_t *section, int pilot, int inv_start_rank) 
 	self->brake_left = 0;
 	self->flags = SHIP_RACING | SHIP_VISIBLE | SHIP_DIRECTION_FORWARD;
 	self->weapon_type = WEAPON_TYPE_NONE;
-	// self->weapon_target = NULL;
 	self->lap = -1;
 	self->max_lap = -1;
 	self->speed = 0;
 	self->ebolt_timer = 0;
 	self->revcon_timer = 0;
 	self->special_timer = 0;
+	self->weapon_target = NULL;
 	self->mat = mat4_identity();
 
 	self->update_timer = 0;
@@ -514,7 +514,7 @@ void ship_draw_flare_psx(ship_t *self) {
 	render_set_depth_offset(0.0);
 
 	// DIAMOND
-	uint16_t radius = 64;
+	uint16_t radius = 75;
 	for (int i = 0; i < 4; i++) {
 		mat4_set_yaw_pitch_roll(
 			&m,
@@ -545,7 +545,7 @@ void ship_draw_flare_psx(ship_t *self) {
 	// STAR
 	// long axis
 	uint16_t long_length = 200;
-	uint16_t short_length = 100;
+	uint16_t short_length = long_length/2;
 	uint16_t half_width = 10;
 	uint16_t half_width_tip = 6;
 	uint16_t inner_alpha = 170;
@@ -764,7 +764,7 @@ void ship_draw_player_trail(ship_t *self) {
 	// 	thrust_factor = 1.0;
 	// }
 	mat4_t *m = &mat4_identity();
-	mat4_set_yaw_pitch_roll(m, vec3(self->angle.x, self->angle.y + 0.05*self->angle.z, 1.0*self->angle.z));
+	mat4_set_yaw_pitch_roll(m, vec3(self->angle.x, self->angle.y - 0.10*self->angle.z, 1.0*self->angle.z));
 	mat4_set_translation(m, vec3_sub(vec3_add(self->position, vec3_mulf(self->dir_up, 10)), vec3_mulf(self->dir_forward, 430))); //435
 	render_set_model_mat(m);
 	render_set_depth_write(false);
