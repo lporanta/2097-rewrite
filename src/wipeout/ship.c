@@ -514,7 +514,7 @@ void ship_draw_flare_psx(ship_t *self) {
 	render_set_depth_offset(0.0);
 
 	// DIAMOND
-	uint16_t radius = 75;
+	uint16_t radius = 65;
 	for (int i = 0; i < 4; i++) {
 		mat4_set_yaw_pitch_roll(
 			&m,
@@ -526,7 +526,7 @@ void ship_draw_flare_psx(ship_t *self) {
 			.vertices = {
 				{
 					.pos = {0, 0, 0},
-					.color = rgba(80,80,255,255)
+					.color = rgba(50,50,255,255)
 				},
 				{
 					.pos = {thrust_factor*radius, 0, 0},
@@ -548,7 +548,7 @@ void ship_draw_flare_psx(ship_t *self) {
 	uint16_t short_length = long_length/2;
 	uint16_t half_width = 10;
 	uint16_t half_width_tip = 6;
-	uint16_t inner_alpha = 170;
+	uint16_t inner_alpha = 128;
 	vec3_t offset = vec3(0, 0, M_PI / 4);
 	
 	for (int i = 0; i < 2; i++) {
