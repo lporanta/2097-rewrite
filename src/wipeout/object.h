@@ -325,8 +325,8 @@ typedef struct Object {
 	Primitive *primitives; // Pointer to Z Sort Primitives
 
 	vec3_t origin;
-	int32_t extent; // Flags for object characteristics
-	int16_t flags; // Next object in list
+	int32_t extent; // ???
+	int16_t flags; // Flags for object characteristics
 	float radius;
 	struct Object *next; // Next object in list
 } Object;

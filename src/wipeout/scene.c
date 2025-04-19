@@ -276,7 +276,7 @@ void scene_move_cameras(Object *cam) {
 	float height = sqrt(target.x * target.x + target.z * target.z);
 	float cam_angle_x = -atan2(target.y, height);
 	float cam_angle_y = -atan2(target.x, target.z);
-	float y_offset = cam->origin.z / 50;
+	float y_offset = (cam->origin.x + cam->origin.z) / 50;
 	mat4_set_translation(
 		&cam->mat,
 		vec3(

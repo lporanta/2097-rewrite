@@ -1694,13 +1694,13 @@ void ship_collide_with_ship(ship_t *self, ship_t *other) {
 
 	vec3_t res = vec3_sub(self->position, other->position);
 
-	self->velocity = vec3_add(self->velocity, vec3_mulf(res, 4));  // << 2
-	self->position = vec3_add(self->position, vec3_mulf(self->velocity, 0.015625)); // >> 6
-	// self->position = vec3_add(self->position, vec3_mulf(self->velocity, system_tick())); // >> 6
+	self->velocity = vec3_add(self->velocity, vec3_mulf(res, 2));  // << 2 // new wo1 is 4???
+	// self->position = vec3_add(self->position, vec3_mulf(self->velocity, 0.015625)); // >> 6
+	self->position = vec3_add(self->position, vec3_mulf(self->velocity, system_tick())); // >> 6
 
-	other->velocity = vec3_sub(other->velocity, vec3_mulf(res, 4)); // << 2
-	other->position = vec3_add(other->position, vec3_mulf(other->velocity, 0.015625)); // >> 6
-	// other->position = vec3_add(other->position, vec3_mulf(other->velocity, system_tick())); // >> 6
+	other->velocity = vec3_sub(other->velocity, vec3_mulf(res, 2)); // << 2 // new wo1 is 4???
+	// other->position = vec3_add(other->position, vec3_mulf(other->velocity, 0.015625)); // >> 6
+	other->position = vec3_add(other->position, vec3_mulf(other->velocity, system_tick())); // >> 6
 
 	if (
 		flags_not(self->flags, SHIP_COLL) && 

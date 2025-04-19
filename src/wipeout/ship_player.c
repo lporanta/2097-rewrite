@@ -296,7 +296,7 @@ void ship_player_update_race(ship_t *self) {
 	// WEAPON_TYPE_TURBO     9
 	// WEAPON_TYPE_MAX      10
 
-	self->weapon_type = WEAPON_TYPE_TURBO; // Test weapon
+	self->weapon_type = WEAPON_TYPE_SHIELD; // Test weapon
 
 	// self->weapon_type = WEAPON_TYPE_MISSILE; // Test weapon
 
@@ -408,7 +408,7 @@ void ship_player_update_race(ship_t *self) {
 
 		if (height < 100) {
 			// to reduce bounce
-			self->velocity = vec3_reflect(self->velocity, face->normal, 0.2);
+			self->velocity = vec3_reflect(self->velocity, face->normal, 0.15);
 		}
 
 		// Calculate acceleration

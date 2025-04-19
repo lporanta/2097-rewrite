@@ -101,6 +101,7 @@ void camera_update_race_external(camera_t *camera, ship_t *ship, droid_t *droid)
 
 	vec3_t pos = vec3_sub(ship->position, vec3_mulf(ship->dir_forward, 1024));
 	pos.y -= 254;
+	float angle_x_offset = -0.05;
 	camera->section = track_nearest_section(pos, vec3(1,1,1), camera->section, NULL);
 	section_t *next = camera->section->next;
 
@@ -108,7 +109,7 @@ void camera_update_race_external(camera_t *camera, ship_t *ship, droid_t *droid)
 
 	vec3_t diff_from_center = vec3_sub(pos, target);
 	vec3_t acc = diff_from_center;
-	acc.y += vec3_len(diff_from_center) * 0.1; //0.5
+	acc.y += vec3_len(diff_from_center) * 0.8; //0.5
 
 	camera->velocity = vec3_sub(camera->velocity, vec3_mulf(acc, 0.015625 * 30 * system_tick()));
 	camera->velocity = vec3_sub(camera->velocity, vec3_mulf(camera->velocity, 0.125 * 30 * system_tick()));
@@ -116,7 +117,7 @@ void camera_update_race_external(camera_t *camera, ship_t *ship, droid_t *droid)
 
 	camera->position = pos;
 	camera->angle = vec3(
-		ship->angle.x,
+		ship->angle.x + angle_x_offset,
 		ship->angle.y,
 		save.screen_shake * camera->shake_timer * lerp(rand_float(-0.3, 0.3), camera->angle.z, 0.5)
 		);
