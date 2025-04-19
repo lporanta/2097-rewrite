@@ -20,17 +20,21 @@
 
 void ships_load(void) {
 	// 2097 models
-	texture_list_t ship_textures = image_get_compressed_textures("wipeout/common/allsh2.cmp");
-	Object *ship_models = objects_load("wipeout/common/allsh2.prm", ship_textures);
+	// texture_list_t ship_textures = image_get_compressed_textures("wipeout/common/allsh2.cmp");
+	// Object *ship_models = objects_load("wipeout/common/allsh2.prm", ship_textures);
+	texture_list_t ship_textures = image_get_compressed_textures("wipeout2/common/terry.cmp");
+	Object *ship_models = objects_load("wipeout2/common/terry.prm", ship_textures);
 
-	texture_list_t collision_textures = image_get_compressed_textures("wipeout/common/alcol.cmp");
-	Object *collision_models = objects_load("wipeout/common/alcol.prm", collision_textures);
+	// texture_list_t collision_textures = image_get_compressed_textures("wipeout/common/alcol.cmp");
+	// Object *collision_models = objects_load("wipeout/common/alcol.prm", collision_textures);
+	texture_list_t collision_textures = image_get_compressed_textures("wipeout2/common/alcol.cmp");
+	Object *collision_models = objects_load("wipeout2/common/alcol.prm", collision_textures);
 
 	int object_index;
 	Object *ship_model = ship_models;
 	Object *collision_model = collision_models;
 
-	for (object_index = 0; object_index < len(g.ships) && ship_model && collision_model; object_index++) {
+	for (object_index = 0; object_index < NUM_TEAMS && ship_model && collision_model; object_index++) {
 		int ship_index = def.ship_model_to_pilot[object_index];
 		g.ships[ship_index].model = ship_model;
 		g.ships[ship_index].collision_model = collision_model;
@@ -39,14 +43,15 @@ void ships_load(void) {
 		collision_model = collision_model->next;
 	}
 
-	error_if(object_index != len(g.ships), "Expected %ld ship models, got %d", len(g.ships), object_index);
+	// error_if(object_index != len(g.ships), "Expected %ld ship models, got %d", len(g.ships), object_index);
+	error_if(object_index != NUM_TEAMS, "Expected %ld ship models, got %d", NUM_TEAMS, object_index);
 
 	// TODO: how to get 2097 shadows?
 	uint16_t shadow_textures_start = render_textures_len();
-	image_get_texture_semi_trans("wipeout/textures/shad1.tim");
-	image_get_texture_semi_trans("wipeout/textures/shad2.tim");
-	image_get_texture_semi_trans("wipeout/textures/shad3.tim");
-	image_get_texture_semi_trans("wipeout/textures/shad4.tim");
+	image_get_texture_semi_trans("wipeout2/textures/shad1.tim");
+	image_get_texture_semi_trans("wipeout2/textures/shad2.tim");
+	image_get_texture_semi_trans("wipeout2/textures/shad3.tim");
+	image_get_texture_semi_trans("wipeout2/textures/shad4.tim");
 
 	for (int i = 0; i < len(g.ships); i++) {
 		g.ships[i].shadow_texture = shadow_textures_start + (i >> 1);

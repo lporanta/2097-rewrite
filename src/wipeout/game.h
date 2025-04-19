@@ -76,17 +76,27 @@ enum pilot {
 	PILOT_ARIAL_TETSUO,
 	PILOT_ANASTASIA_CHEROVOSKI,
 	PILOT_KEL_SOLAAR,
-	PILOT_ARIAN_TETSUO,
-	PILOT_SOFIA_DE_LA_RENTE,
-	PILOT_PAUL_JACKSON,
+	// PILOT_ARIAN_TETSUO,
+	// PILOT_SOFIA_DE_LA_RENTE,
+	// PILOT_PAUL_JACKSON,
 	NUM_PILOTS
 };
 
+// enum team {
+// 	team_ag_systems,
+// 	team_auricom,
+// 	team_qirex,
+// 	team_feisar,
+// 	team_piranha,
+// 	num_teams
+// };
+
 enum team {
+	TEAM_FEISAR,
 	TEAM_AG_SYSTEMS,
 	TEAM_AURICOM,
 	TEAM_QIREX,
-	TEAM_FEISAR,
+	TEAM_PIRANHA,
 	NUM_TEAMS
 };
 

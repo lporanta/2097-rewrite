@@ -16,7 +16,7 @@ static void page_options_init(menu_t *menu);
 static void page_race_class_init(menu_t *menu);
 static void page_race_type_init(menu_t *menu);
 static void page_team_init(menu_t *menu);
-static void page_pilot_init(menu_t *menu);
+// static void page_pilot_init(menu_t *menu);
 static void page_circut_init(menu_t *menu);
 static void page_options_controls_init(menu_t *menu);
 static void page_options_video_init(menu_t *menu);
@@ -25,7 +25,7 @@ static void page_options_misc_init(menu_t *menu);
 static void page_options_highscores_init(menu_t *menu);
 
 static uint16_t background;
-static texture_list_t track_images;
+// static texture_list_t track_images;
 static menu_t *main_menu;
 
 static const char *opts_off_on[] = {"OFF", "ON"};
@@ -36,15 +36,15 @@ static const char *opts_res[] = {"NATIVE", "240P", "480P"};
 static const char *opts_post[] = {"NONE", "CRT EFFECT"};
 
 static struct {
-	Object *race_classes[NUM_RACE_CLASSES];
-	Object *teams[4];
-	Object *pilots[8];
+	// Object *race_classes[NUM_RACE_CLASSES];
+	// Object *teams[4];
+	// Object *pilots[8];
 	struct { Object *stopwatch, *save, *load, *headphones, *cd; } options;
 	struct { Object *championship, *msdos, *single_race, *options; } misc;
 	Object *rescue;
 	Object *controller;
-	Object *tracks_2097[8];
-	Object *menu_items_2097[10];
+	Object *menu_tracks[8];
+	Object *menu_items[10];
 } models;
 
 static void draw_model(Object *model, vec2_t offset, vec3_t pos, float rotation) {
@@ -85,7 +85,7 @@ static void page_main_draw(menu_t *menu, int data) {
 	switch (data) {
 		case 0: draw_model(g.ships[1].model, vec2(0, -0.1), vec3(0, 0, -700), system_cycle_time()); break;
 		// case 1: draw_model(models.menu_items_2097[0], vec2(0, -0.2), vec3(0, 0, -700), system_cycle_time()); break;
-		case 1: draw_model(models.menu_items_2097[7], vec2(0, -0.2), vec3(0, 0, -700), system_cycle_time()); break;
+		case 1: draw_model(models.menu_items[7], vec2(0, -0.2), vec3(0, 0, -700), system_cycle_time()); break;
 		// case 2: draw_model(models.misc.msdos, vec2(0, -0.2), vec3(0, 0, -700), system_cycle_time()); break;
 		case 2: break; // draw nothing, we're not on msdos anymore
 	}
@@ -429,8 +429,8 @@ static void page_options_misc_init(menu_t *menu) {
 	page->items_anchor = UI_POS_MIDDLE | UI_POS_CENTER;
 
 	menu_page_add_toggle(page, save.rumble, "CONTROLLER RUMBLE", opts_off_on, len(opts_off_on), toggle_rumble);
-	menu_page_add_toggle(page, save.has_bonus_circuts, "BONUS CIRCUITS", opts_off_on, len(opts_off_on), toggle_bonus_circuts);
-	menu_page_add_toggle(page, save.has_rapier_class, "RAPIER CLASS", opts_off_on, len(opts_off_on), toggle_rapier);
+	// menu_page_add_toggle(page, save.has_bonus_circuts, "BONUS CIRCUITS", opts_off_on, len(opts_off_on), toggle_bonus_circuts);
+	// menu_page_add_toggle(page, save.has_rapier_class, "RAPIER CLASS", opts_off_on, len(opts_off_on), toggle_rapier);
 }
 
 // -----------------------------------------------------------------------------
@@ -560,9 +560,9 @@ static void page_race_class_draw(menu_t *menu, int data) {
 	page->items_pos = vec2i(0, -110);
 	page->items_anchor = UI_POS_BOTTOM | UI_POS_CENTER;
 	if (data==0) {
-		draw_model(models.menu_items_2097[0], vec2(0, -0.2), vec3(0, 0, -500), system_cycle_time());
+		draw_model(models.menu_items[0], vec2(0, -0.2), vec3(0, 0, -500), system_cycle_time());
 	} else if (data==1) {
-		draw_model(models.menu_items_2097[3], vec2(0, -0.2), vec3(0, 0, -500), system_cycle_time());
+		draw_model(models.menu_items[3], vec2(0, -0.2), vec3(0, 0, -500), system_cycle_time());
 	} else {
 		// draw_model(models.race_classes[data], vec2(0, -0.2), vec3(0, 0, -350), system_cycle_time());
 	}
@@ -592,9 +592,9 @@ static void button_race_type_select(menu_t *menu, int data) {
 
 static void page_race_type_draw(menu_t *menu, int data) {
 	switch (data) {
-		case 0: draw_model(models.misc.championship, vec2(0, -0.2), vec3(0, 0, -400), system_cycle_time()); break;
-		case 1: draw_model(models.menu_items_2097[8], vec2(0, -0.2), vec3(0, 0, -600), system_cycle_time()); break;
-		case 2: draw_model(models.menu_items_2097[2], vec2(0, -0.2), vec3(0, 0, -600), system_cycle_time()); break;
+		// case 0: draw_model(models.misc.championship, vec2(0, -0.2), vec3(0, 0, -400), system_cycle_time()); break;
+		case 1: draw_model(models.menu_items[8], vec2(0, -0.2), vec3(0, 0, -600), M_PI + system_cycle_time()); break;
+		case 2: draw_model(models.menu_items[2], vec2(0, -0.2), vec3(0, 0, -600), M_PI + system_cycle_time()); break;
 	}
 }
 
@@ -616,14 +616,19 @@ static void page_race_type_init(menu_t *menu) {
 
 static void button_team_select(menu_t *menu, int data) {
 	g.team = data;
-	page_pilot_init(menu);
+	// page_pilot_init(menu);
+	g.pilot = data; //TODO FIX
+	page_circut_init(menu);
 }
 
 static void page_team_draw(menu_t *menu, int data) {
 	int team_model_index = (data + 3) % 4; // models in the prm are shifted by -1
-	draw_model(models.teams[team_model_index], vec2(0, -0.2), vec3(0, 0, -10000), system_cycle_time());
-	draw_model(g.ships[def.teams[data].pilots[0]].model, vec2(0, -0.3), vec3(-700, -800, -1300), system_cycle_time()*-1.1);
-	draw_model(g.ships[def.teams[data].pilots[1]].model, vec2(0, -0.3), vec3( 700, -800, -1300), system_cycle_time()*-1.2);
+	// draw_model(models.teams[team_model_index], vec2(0, -0.2), vec3(0, 0, -12000), system_cycle_time());
+	draw_model(g.ships[data].model, vec2(0, -0.2), vec3(0, 0, -800), system_cycle_time()*-1.1);
+	// draw_model(g.ships[data].model, vec2(0, -0.3), vec3(0, -800, -1300), system_cycle_time()*-1.1);
+	// draw_model(g.ships[def.teams[data].pilots[0]].model, vec2(0, -0.3), vec3(0, -800, -1300), system_cycle_time()*-1.1);
+	// draw_model(g.ships[def.teams[data].pilots[0]].model, vec2(0, -0.3), vec3(-700, -800, -1300), system_cycle_time()*-1.1);
+	// draw_model(g.ships[def.teams[data].pilots[1]].model, vec2(0, -0.3), vec3( 700, -800, -1300), system_cycle_time()*-1.2);
 }
 
 static void page_team_init(menu_t *menu) {
@@ -641,33 +646,33 @@ static void page_team_init(menu_t *menu) {
 // -----------------------------------------------------------------------------
 // Pilot
 
-static void button_pilot_select(menu_t *menu, int data) {
-	g.pilot = data;
-	if (g.race_type != RACE_TYPE_CHAMPIONSHIP) {
-		page_circut_init(menu);
-	}
-	else {
-		g.circut = 0;
-		game_reset_championship();
-		game_set_scene(GAME_SCENE_RACE);
-	}
-}
-
-static void page_pilot_draw(menu_t *menu, int data) {
-	draw_model(models.pilots[def.pilots[data].logo_model], vec2(0, -0.2), vec3(0, 0, -10000), system_cycle_time());
-}
-
-static void page_pilot_init(menu_t *menu) {
-	menu_page_t *page = menu_push(menu, "CHOOSE YOUR PILOT", page_pilot_draw);
-	flags_add(page->layout_flags, MENU_FIXED);
-	page->title_pos = vec2i(0, 30);
-	page->title_anchor = UI_POS_TOP | UI_POS_CENTER;
-	page->items_pos = vec2i(0, -110);
-	page->items_anchor = UI_POS_BOTTOM | UI_POS_CENTER;
-	for (int i = 0; i < len(def.teams[g.team].pilots); i++) {
-		menu_page_add_button(page, def.teams[g.team].pilots[i], def.pilots[def.teams[g.team].pilots[i]].name, button_pilot_select);
-	}
-}
+// static void button_pilot_select(menu_t *menu, int data) {
+// 	g.pilot = data;
+// 	if (g.race_type != RACE_TYPE_CHAMPIONSHIP) {
+// 		page_circut_init(menu);
+// 	}
+// 	else {
+// 		g.circut = 0;
+// 		game_reset_championship();
+// 		game_set_scene(GAME_SCENE_RACE);
+// 	}
+// }
+//
+// static void page_pilot_draw(menu_t *menu, int data) {
+// 	draw_model(models.pilots[def.pilots[data].logo_model], vec2(0, -0.2), vec3(0, 0, -10000), system_cycle_time());
+// }
+//
+// static void page_pilot_init(menu_t *menu) {
+// 	menu_page_t *page = menu_push(menu, "CHOOSE YOUR PILOT", page_pilot_draw);
+// 	flags_add(page->layout_flags, MENU_FIXED);
+// 	page->title_pos = vec2i(0, 30);
+// 	page->title_anchor = UI_POS_TOP | UI_POS_CENTER;
+// 	page->items_pos = vec2i(0, -110);
+// 	page->items_anchor = UI_POS_BOTTOM | UI_POS_CENTER;
+// 	for (int i = 0; i < len(def.teams[g.team].pilots); i++) {
+// 		menu_page_add_button(page, def.teams[g.team].pilots[i], def.pilots[def.teams[g.team].pilots[i]].name, button_pilot_select);
+// 	}
+// }
 
 // -----------------------------------------------------------------------------
 // Circut
@@ -679,10 +684,11 @@ static void button_circut_select(menu_t *menu, int data) {
 
 static void page_circut_draw(menu_t *menu, int data) {
 	vec2i_t pos = vec2i(0, -25);
+	// vec2i_t pos = vec2i(0, -200);
 	vec2i_t size = vec2i(128, 74);
 	vec2i_t scaled_size = ui_scaled(size);
 	vec2i_t scaled_pos = ui_scaled_pos(UI_POS_MIDDLE | UI_POS_CENTER, vec2i(pos.x - size.x/2, pos.y - size.y/2));
-	draw_model(models.tracks_2097[data], vec2(0, -0.2), vec3(0, 0, -900), system_cycle_time());
+	draw_model(models.menu_tracks[data], vec2(0, -0.3), vec3(0, 0, -900), system_cycle_time());
 }
 
 static void page_circut_init(menu_t *menu) {
@@ -722,17 +728,17 @@ void main_menu_init(void) {
 
 	background = image_get_texture("wipeout2/textures/menupic.tim");
 
-	track_images = image_get_compressed_textures("wipeout/textures/track.cmp");
+	// track_images = image_get_compressed_textures("wipeout/textures/track.cmp");
 
-	objects_unpack(models.race_classes, objects_load("wipeout/common/leeg.prm", image_get_compressed_textures("wipeout/common/leeg.cmp")));
-	objects_unpack(models.teams, objects_load("wipeout/common/teams.prm", texture_list_empty()));
-	objects_unpack(models.pilots, objects_load("wipeout/common/pilot.prm", image_get_compressed_textures("wipeout/common/pilot.cmp")));
+	// objects_unpack(models.race_classes, objects_load("wipeout/common/leeg.prm", image_get_compressed_textures("wipeout/common/leeg.cmp")));
+	// objects_unpack(models.teams, objects_load("wipeout/common/teams.prm", texture_list_empty()));
+	// objects_unpack(models.pilots, objects_load("wipeout/common/pilot.prm", image_get_compressed_textures("wipeout/common/pilot.cmp")));
 	objects_unpack(models.options, objects_load("wipeout/common/alopt.prm", image_get_compressed_textures("wipeout/common/alopt.cmp")));
-	objects_unpack(models.rescue, objects_load("wipeout/common/rescu.prm", image_get_compressed_textures("wipeout/common/rescu.cmp")));
+	objects_unpack(models.rescue, objects_load("wipeout2/common/rescu.prm", image_get_compressed_textures("wipeout2/common/rescu.cmp")));
 	objects_unpack(models.controller, objects_load("wipeout/common/pad1.prm", image_get_compressed_textures("wipeout/common/pad1.cmp")));
 	objects_unpack(models.misc, objects_load("wipeout/common/msdos.prm", image_get_compressed_textures("wipeout/common/msdos.cmp")));
-	objects_unpack(models.tracks_2097, objects_load("wipeout/common/june.prm", texture_list_empty()));
-	objects_unpack(models.menu_items_2097, objects_load("wipeout2/common/julie.prm", texture_list_empty()));
+	objects_unpack(models.menu_tracks, objects_load("wipeout2/common/june.prm", texture_list_empty()));
+	objects_unpack(models.menu_items, objects_load("wipeout2/common/julie.prm", texture_list_empty()));
 
 	menu_reset(main_menu);
 	page_main_init(main_menu);

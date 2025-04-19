@@ -36,19 +36,30 @@ const game_def_t def = {
 		[RACE_TYPE_TIME_TRIAL]   = {.name = "TIME TRIAL"},
 	},
 
+	// .pilots = {
+	// 	[PILOT_JOHN_DEKKA]           = {.name = "JOHN DEKKA",           .portrait = "wipeout/textures/dekka.cmp", .team = 0, .logo_model = 0},
+	// 	[PILOT_DANIEL_CHANG]         = {.name = "DANIEL CHANG",         .portrait = "wipeout/textures/chang.cmp", .team = 0, .logo_model = 4},
+	// 	[PILOT_ARIAL_TETSUO]         = {.name = "ARIAL TETSUO",         .portrait = "wipeout/textures/arial.cmp", .team = 1, .logo_model = 6},
+	// 	[PILOT_ANASTASIA_CHEROVOSKI] = {.name = "ANASTASIA CHEROVOSKI", .portrait = "wipeout/textures/anast.cmp", .team = 1, .logo_model = 7},
+	// 	[PILOT_KEL_SOLAAR]           = {.name = "KEL SOLAAR",           .portrait = "wipeout/textures/solar.cmp", .team = 2, .logo_model = 2},
+	// 	[PILOT_ARIAN_TETSUO]         = {.name = "ARIAN TETSUO",         .portrait = "wipeout/textures/arian.cmp", .team = 2, .logo_model = 5},
+	// 	[PILOT_SOFIA_DE_LA_RENTE]    = {.name = "SOFIA DE LA RENTE",    .portrait = "wipeout/textures/sophi.cmp", .team = 3, .logo_model = 1},
+	// 	[PILOT_PAUL_JACKSON]         = {.name = "PAUL JACKSON",         .portrait = "wipeout/textures/paul.cmp",  .team = 3, .logo_model = 3},
+	// },
+
 	.pilots = {
 		[PILOT_JOHN_DEKKA]           = {.name = "JOHN DEKKA",           .portrait = "wipeout/textures/dekka.cmp", .team = 0, .logo_model = 0},
-		[PILOT_DANIEL_CHANG]         = {.name = "DANIEL CHANG",         .portrait = "wipeout/textures/chang.cmp", .team = 0, .logo_model = 4},
-		[PILOT_ARIAL_TETSUO]         = {.name = "ARIAL TETSUO",         .portrait = "wipeout/textures/arial.cmp", .team = 1, .logo_model = 6},
-		[PILOT_ANASTASIA_CHEROVOSKI] = {.name = "ANASTASIA CHEROVOSKI", .portrait = "wipeout/textures/anast.cmp", .team = 1, .logo_model = 7},
-		[PILOT_KEL_SOLAAR]           = {.name = "KEL SOLAAR",           .portrait = "wipeout/textures/solar.cmp", .team = 2, .logo_model = 2},
-		[PILOT_ARIAN_TETSUO]         = {.name = "ARIAN TETSUO",         .portrait = "wipeout/textures/arian.cmp", .team = 2, .logo_model = 5},
-		[PILOT_SOFIA_DE_LA_RENTE]    = {.name = "SOFIA DE LA RENTE",    .portrait = "wipeout/textures/sophi.cmp", .team = 3, .logo_model = 1},
-		[PILOT_PAUL_JACKSON]         = {.name = "PAUL JACKSON",         .portrait = "wipeout/textures/paul.cmp",  .team = 3, .logo_model = 3},
+		[PILOT_DANIEL_CHANG]         = {.name = "DANIEL CHANG",         .portrait = "wipeout/textures/chang.cmp", .team = 1, .logo_model = 4},
+		[PILOT_ARIAL_TETSUO]         = {.name = "ARIAL TETSUO",         .portrait = "wipeout/textures/arial.cmp", .team = 2, .logo_model = 6},
+		[PILOT_ANASTASIA_CHEROVOSKI] = {.name = "ANASTASIA CHEROVOSKI", .portrait = "wipeout/textures/anast.cmp", .team = 3, .logo_model = 7},
+		[PILOT_KEL_SOLAAR]           = {.name = "KEL SOLAAR",           .portrait = "wipeout/textures/solar.cmp", .team = 4, .logo_model = 2},
 	},
 
-	.ship_model_to_pilot = {6, 4, 7, 1, 5, 2, 3, 0},
-	.race_points_for_rank = {9, 7, 5, 3, 2, 1, 0, 0},
+	// .ship_model_to_pilot = {6, 4, 7, 1, 5, 2, 3, 0},
+	// .race_points_for_rank = {9, 7, 5, 3, 2, 1, 0, 0},
+
+	.ship_model_to_pilot = {0, 1, 2, 3, 4},
+	.race_points_for_rank = {9, 7, 5, 3, 2},
 
 	// SHIP ATTRIBUTES
 	//               TEAM 1   TEAM 2   TEAM 3   TEAM 4
@@ -61,7 +72,8 @@ const game_def_t def = {
 		[TEAM_AG_SYSTEMS] = {
 			.name = "AG SYSTEMS",
 			.logo_model = 2,
-			.pilots = {0, 1},
+			// .pilots = {0, 1},
+			.pilots = {0},
 			.attributes = {
 				[RACE_CLASS_VENOM]  = {.mass = 150, .thrust_max =  790, .resistance = 140, .turn_rate = TURN_ACCEL(160), .turn_rate_max = TURN_VEL(2560), .skid = 12},
 				// [RACE_CLASS_RAPIER] = {.mass = 150, .thrust_max = 1200, .resistance = 140, .turn_rate = TURN_ACCEL(160), .turn_rate_max = TURN_VEL(2560), .skid = 10},
@@ -71,7 +83,8 @@ const game_def_t def = {
 		[TEAM_AURICOM] = {
 			.name = "AURICOM",
 			.logo_model = 3,
-			.pilots = {2, 3},
+			// .pilots = {2, 3},
+			.pilots = {1},
 			.attributes = {
 				[RACE_CLASS_VENOM]  = {.mass = 150, .thrust_max =  850, .resistance = 134, .turn_rate = TURN_ACCEL(140), .turn_rate_max = TURN_VEL(1920), .skid = 20},
 				[RACE_CLASS_RAPIER] = {.mass = 150, .thrust_max = 1400, .resistance = 140, .turn_rate = TURN_ACCEL(120), .turn_rate_max = TURN_VEL(1920), .skid = 14},
@@ -80,7 +93,8 @@ const game_def_t def = {
 		[TEAM_QIREX] = {
 			.name = "QIREX",
 			.logo_model = 1,
-			.pilots = {4, 5},
+			// .pilots = {4, 5},
+			.pilots = {2},
 			.attributes = {
 				[RACE_CLASS_VENOM]  = {.mass = 150, .thrust_max =  850, .resistance = 140, .turn_rate = TURN_ACCEL(120), .turn_rate_max = TURN_VEL(1920), .skid = 24},
 				[RACE_CLASS_RAPIER] = {.mass = 150, .thrust_max = 1400, .resistance = 130, .turn_rate = TURN_ACCEL(140), .turn_rate_max = TURN_VEL(1920), .skid = 16},
@@ -89,7 +103,18 @@ const game_def_t def = {
 		[TEAM_FEISAR] = {
 			.name = "FEISAR",
 			.logo_model = 0,
-			.pilots = {6, 7},
+			// .pilots = {6, 7},
+			.pilots = {3},
+			.attributes = {
+				[RACE_CLASS_VENOM]  = {.mass = 150, .thrust_max =  790, .resistance = 134, .turn_rate = TURN_ACCEL(180), .turn_rate_max = TURN_VEL(2560), .skid = 12},
+				[RACE_CLASS_RAPIER] = {.mass = 150, .thrust_max = 1200, .resistance = 130, .turn_rate = TURN_ACCEL(180), .turn_rate_max = TURN_VEL(2560), .skid =  8},
+			},
+		},
+		[TEAM_PIRANHA] = {
+			.name = "PIRANHA",
+			.logo_model = 0,
+			// .pilots = {6, 7}, // TODO FIX PILOTS
+			.pilots = {4}, // TODO FIX PILOTS
 			.attributes = {
 				[RACE_CLASS_VENOM]  = {.mass = 150, .thrust_max =  790, .resistance = 134, .turn_rate = TURN_ACCEL(180), .turn_rate_max = TURN_VEL(2560), .skid = 12},
 				[RACE_CLASS_RAPIER] = {.mass = 150, .thrust_max = 1200, .resistance = 130, .turn_rate = TURN_ACCEL(180), .turn_rate_max = TURN_VEL(2560), .skid =  8},
@@ -362,8 +387,8 @@ save_t save = {
 	.psx_wobble = false,
 	.screen_shake = true,
 
-	.has_rapier_class = false,  // for testing; should be false in prod
-	.has_bonus_circuts = false, // for testing; should be false in prod
+	.has_rapier_class = true,  // for testing; should be false in prod
+	.has_bonus_circuts = true, // for testing; should be false in prod
 
 	.buttons = {
 		[A_UP] = {INPUT_KEY_UP, INPUT_GAMEPAD_DPAD_UP},
