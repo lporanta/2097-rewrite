@@ -500,7 +500,7 @@ void ship_draw_flare_psx(ship_t *self) {
 	// rgba_t color = rgba(0,0,255,clamp(((1+sin(system_time()*20.0))/2.0)*vec3_len(self->thrust)/155.0,90,255));
 	// float thrust_factor = clamp(vec3_len(self->thrust))/20000.0,0,1.0);
 	float thrust_factor = clamp(self->thrust_mag-10,0,300.0)/300.0;
-	if (self->pilot != g.pilot || self->lap >= NUM_LAPS) {
+	if (self->pilot != g.pilot || self->lap >= NUM_LAPS || g.is_attract_mode) {
 		thrust_factor = 1.0;
 	}
 	thrust_factor += clamp(self->angle.x*3, -0.8, 0.0);

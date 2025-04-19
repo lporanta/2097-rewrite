@@ -84,7 +84,7 @@ void scene_load(const char *base_path, float sky_y_offset) {
 
 	Object *obj = scene_objects;
 	while (obj) {
-		printf("load obj: %s (%f, %f, %f)\n", obj->name, obj->origin.x, obj->origin.y, obj->origin.z);
+		// printf("load obj: %s (%f, %f, %f)\n", obj->name, obj->origin.x, obj->origin.y, obj->origin.z);
 		mat4_set_translation(&obj->mat, obj->origin);
 
 		if (str_starts_with(obj->name, "start")) {
@@ -118,9 +118,10 @@ void scene_load(const char *base_path, float sky_y_offset) {
 		else if (str_starts_with(obj->name, "zeppelin")) {
 			zeppelin.triggered = false;
 			zeppelin.obj = obj;
-			zeppelin.offset_initial = obj->origin;
-			zeppelin.offset = obj->origin;
+			zeppelin.offset_initial = vec3_sub(obj->origin, vec3(0, 0, 4096));
+			zeppelin.offset = zeppelin.offset_initial;
 		}
+
 		obj = obj->next;
 	}
 
@@ -181,7 +182,9 @@ void scene_update(void) {
 		}
 
 		if (zeppelin.triggered) {
-			zeppelin.offset = vec3_add(zeppelin.offset, vec3(0, 0, 4096.0 * system_tick()));
+			if (zeppelin.offset.z < 500000) {
+				zeppelin.offset = vec3_add(zeppelin.offset, vec3(0, 0, 4096.0 * system_tick()));
+			}
 			mat4_set_translation(&zeppelin.obj->mat, zeppelin.offset);
 		} else {
 			zeppelin.offset = zeppelin.offset_initial;

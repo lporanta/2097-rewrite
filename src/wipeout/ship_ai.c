@@ -490,7 +490,7 @@ void ship_ai_update_race(ship_t *self) {
 			track_target.y,
 			(track_target.z + ((best_path.z - self->position.z) * 0.5))
 		);
-		self->velocity = vec3_add(self->velocity, vec3_mulf(self->acceleration, 30 * system_tick()));
+		self->velocity = vec3_add(self->velocity, vec3_mulf(self->acceleration, 30 * system_tick())); //30
 
 		self->angular_velocity.x = -0.3 - self->angle.x * 30;
 		self->angular_velocity.y = wrap_angle(-atan2(track_target.x, track_target.z) - self->angle.y) * (1.0/16.0) * 30;

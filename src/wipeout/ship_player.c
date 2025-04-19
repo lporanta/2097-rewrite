@@ -219,7 +219,10 @@ void ship_player_update_race(ship_t *self) {
 		}
 	}
 
-	self->angular_acceleration.x += input_state(A_DOWN) * SHIP_PITCH_ACCEL;
+	// Limit pitch up
+	if (self->angle.x < 0.1) {
+		self->angular_acceleration.x += input_state(A_DOWN) * SHIP_PITCH_ACCEL;
+	}
 	self->angular_acceleration.x -= input_state(A_UP) * SHIP_PITCH_ACCEL;
 	// printf("DOWN: %f\n", input_state(A_DOWN));
 	// printf("UP: %f\n", input_state(A_UP));
@@ -296,9 +299,11 @@ void ship_player_update_race(ship_t *self) {
 	// WEAPON_TYPE_TURBO     9
 	// WEAPON_TYPE_MAX      10
 
-	self->weapon_type = WEAPON_TYPE_SHIELD; // Test weapon
+	// self->weapon_type = WEAPON_TYPE_SHIELD; // Test weapon
 
 	// self->weapon_type = WEAPON_TYPE_MISSILE; // Test weapon
+
+	// self->weapon_type = WEAPON_TYPE_TURBO; // Test weapon
 
 	if (input_pressed(A_FIRE) && self->weapon_type != WEAPON_TYPE_NONE) {
 		if (flags_not(self->flags, SHIP_SHIELDED)) {
@@ -430,7 +435,7 @@ void ship_player_update_race(ship_t *self) {
 
 		// TODO: better values
 		// if (nose_height < 600) {
-		if (self->angle.x < 0.3) {
+		if (self->angle.x < 0.5) {
 			self->angular_acceleration.x += NTSC_ACCELERATION(ANGLE_NORM_TO_RADIAN(FIXED_TO_FLOAT((height - nose_height + 5) * (1.0/16.0))));
 		}
 		else {
@@ -496,7 +501,8 @@ void ship_player_update_race(ship_t *self) {
 
 	self->angular_acceleration.x -= self->angular_velocity.x * 0.25 * 30;
 	// self->angular_acceleration.z += (self->angular_velocity.y - 0.5 * self->angular_velocity.z) * 30;
-	self->angular_acceleration.z += (self->angular_velocity.y - 0.5 * self->angular_velocity.z) * 16;
+	// self->angular_acceleration.z += (self->angular_velocity.y - 0.5 * self->angular_velocity.z) * 16; 
+	self->angular_acceleration.z += (self->angular_velocity.y - (0.5 * self->angular_velocity.z)) * 30;
 	// self->angular_acceleration.z += ((0.03125 * self->angular_velocity.y) - (0.5 * self->angular_velocity.z)) * 30; // doesn't look right
 
 	// Orientation

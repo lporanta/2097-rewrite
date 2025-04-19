@@ -14,7 +14,7 @@
 #define NUM_MUSIC_TRACKS 11
 #define NUM_HIGHSCORES 5
 
-#define NUM_LAPS 3
+#define NUM_LAPS 4
 #define NUM_LIVES 3
 #define QUALIFYING_RANK 3
 #define SAVE_DATA_MAGIC 0x64736f77
