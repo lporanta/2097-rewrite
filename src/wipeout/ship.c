@@ -20,13 +20,9 @@
 
 void ships_load(void) {
 	// 2097 models
-	// texture_list_t ship_textures = image_get_compressed_textures("wipeout/common/allsh2.cmp");
-	// Object *ship_models = objects_load("wipeout/common/allsh2.prm", ship_textures);
 	texture_list_t ship_textures = image_get_compressed_textures("wipeout2/common/terry.cmp");
 	Object *ship_models = objects_load("wipeout2/common/terry.prm", ship_textures);
 
-	// texture_list_t collision_textures = image_get_compressed_textures("wipeout/common/alcol.cmp");
-	// Object *collision_models = objects_load("wipeout/common/alcol.prm", collision_textures);
 	texture_list_t collision_textures = image_get_compressed_textures("wipeout2/common/alcol.cmp");
 	Object *collision_models = objects_load("wipeout2/common/alcol.prm", collision_textures);
 
@@ -43,7 +39,6 @@ void ships_load(void) {
 		collision_model = collision_model->next;
 	}
 
-	// error_if(object_index != len(g.ships), "Expected %ld ship models, got %d", len(g.ships), object_index);
 	error_if(object_index != NUM_TEAMS, "Expected %ld ship models, got %d", NUM_TEAMS, object_index);
 
 	// TODO: how to get 2097 shadows?
@@ -1304,6 +1299,7 @@ void ship_resolve_wing_collision(ship_t *self, track_face_t *face, float directi
 	float angle = vec3_angle(collision_vector, self->dir_forward);
 
 	self->velocity = vec3_mulf(self->velocity, 0.95);
+	self->thrust_mag *= 0.95;
 	self->position = vec3_add(self->position, vec3_mulf(to_center, fabs(collision_dot) * 32));
 	self->velocity = vec3_add(self->velocity, vec3_mulf(to_center, fabs(collision_dot) * 2048));
 	// printf("c angle: %f\n", angle);
@@ -1351,6 +1347,7 @@ void ship_resolve_nose_collision(ship_t *self, track_face_t *face, float directi
 	vec3_t collision_vector = vec3_sub(self->section->center, face->tris[0].vertices[2].pos);
 	float angle = vec3_angle(collision_vector, self->dir_forward);
 	self->velocity = vec3_sub(self->velocity, vec3_mulf(self->velocity, 0.5));
+	self->thrust_mag *= 0.3;
 	self->velocity = vec3_reflect(self->velocity, face->normal, 2);
 	// self->position = vec3_sub(self->position, vec3_mulf(self->velocity, 0.015625)); // system_tick?
 	self->position = vec3_sub(self->position, vec3_mulf(self->velocity, system_tick())); // system_tick?

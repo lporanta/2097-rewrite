@@ -545,9 +545,9 @@ static void page_options_highscores_init(menu_t *menu) {
 // Racing class
 
 static void button_race_class_select(menu_t *menu, int data) {
-	if (!save.has_rapier_class && data == RACE_CLASS_RAPIER) {
-		return;
-	}
+	// if (!save.has_rapier_class && data == RACE_CLASS_RAPIER) {
+	// 	return;
+	// }
 	g.race_class = data;
 	page_race_type_init(menu);
 }
@@ -560,18 +560,22 @@ static void page_race_class_draw(menu_t *menu, int data) {
 	page->items_pos = vec2i(0, -110);
 	page->items_anchor = UI_POS_BOTTOM | UI_POS_CENTER;
 	if (data==0) {
+		// venom
 		draw_model(models.menu_items[0], vec2(0, -0.2), vec3(0, 0, -500), system_cycle_time());
 	} else if (data==1) {
+		// rapier
 		draw_model(models.menu_items[3], vec2(0, -0.2), vec3(0, 0, -500), system_cycle_time());
-	} else {
-		// draw_model(models.race_classes[data], vec2(0, -0.2), vec3(0, 0, -350), system_cycle_time());
+	} else if (data==2) {
+		// phantom
+		draw_model(models.menu_items[5], vec2(0, -0.2), vec3(0, 0, -500), system_cycle_time());
 	}
+	// draw_model(models.race_classes[data], vec2(0, -0.2), vec3(0, 0, -350), system_cycle_time());
 
-	if (!save.has_rapier_class && data == RACE_CLASS_RAPIER) {
-		render_set_view_2d();
-		vec2i_t pos = vec2i(page->items_pos.x, page->items_pos.y + 32);
-		ui_draw_text_centered("NOT AVAILABLE", ui_scaled_pos(page->items_anchor, pos), UI_SIZE_12, UI_COLOR_ACCENT);
-	}
+	// if (!save.has_rapier_class && data == RACE_CLASS_RAPIER) {
+	// 	render_set_view_2d();
+	// 	vec2i_t pos = vec2i(page->items_pos.x, page->items_pos.y + 32);
+	// 	ui_draw_text_centered("NOT AVAILABLE", ui_scaled_pos(page->items_anchor, pos), UI_SIZE_12, UI_COLOR_ACCENT);
+	// }
 }
 
 static void page_race_class_init(menu_t *menu) {

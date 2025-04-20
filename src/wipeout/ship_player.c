@@ -404,17 +404,19 @@ void ship_player_update_race(ship_t *self) {
 			self->velocity = vec3_sub(self->velocity, vec3_mulf(face->normal, 64.0 * 30 * system_tick()));
 		}
 		else if (height < 30) {
-			self->velocity = vec3_add(self->velocity, vec3_mulf(face->normal, 64.0 * 30 * system_tick())); //4096
+			self->velocity = vec3_sub(self->velocity, vec3_mulf(face->normal, 64.0 * 30 * system_tick())); //4096
+		}
+
+		if (height < 100) {
+			// to reduce bounce
+			// self->velocity = vec3_sub(self->velocity, vec3_mulf(face->normal, 400.0 * 30 * system_tick())); //4096
+			self->velocity = vec3_reflect(self->velocity, face->normal, 0.15);
 		}
 
 		if (height < 50) {
 			height = 50;
 		}
 
-		if (height < 100) {
-			// to reduce bounce
-			self->velocity = vec3_reflect(self->velocity, face->normal, 0.15);
-		}
 
 		// Calculate acceleration
 		float brake = (self->brake_left + self->brake_right);

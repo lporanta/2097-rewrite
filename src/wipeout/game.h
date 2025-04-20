@@ -54,6 +54,7 @@ typedef enum {
 enum race_class {
 	RACE_CLASS_VENOM,
 	RACE_CLASS_RAPIER,
+	RACE_CLASS_PHANTOM,
 	NUM_RACE_CLASSES
 };
 
@@ -123,8 +124,8 @@ typedef struct {
 } race_type_t;
 
 typedef struct {
-	char *name;
-	char *portrait;
+	// char *name;
+	// char *portrait;
 	int logo_model;
 	int team;
 } pilot_t;
