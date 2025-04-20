@@ -26,12 +26,13 @@
 
 const game_def_t def = {
 	.race_classes = {
-		[RACE_CLASS_VENOM] =  {.name = "VENOM CLASS"},
-		[RACE_CLASS_RAPIER] = {.name = "RAPIER CLASS"},
+		[RACE_CLASS_VENOM] =  {.name = "VENOM"},
+		[RACE_CLASS_RAPIER] = {.name = "RAPIER"},
+		[RACE_CLASS_PHANTOM] = {.name = "PHANTOM"},
 	},
 
 	.race_types = {
-		[RACE_TYPE_CHAMPIONSHIP] = {.name = "CHAMPIONSHIP RACE"},
+		// [RACE_TYPE_CHAMPIONSHIP] = {.name = "CHAMPIONSHIP RACE"},
 		[RACE_TYPE_SINGLE]       = {.name = "SINGLE RACE"},
 		[RACE_TYPE_TIME_TRIAL]   = {.name = "TIME TRIAL"},
 	},
@@ -48,18 +49,18 @@ const game_def_t def = {
 	// },
 
 	.pilots = {
-		[PILOT_JOHN_DEKKA]           = {.name = "JOHN DEKKA",           .portrait = "wipeout/textures/dekka.cmp", .team = 0, .logo_model = 0},
-		[PILOT_DANIEL_CHANG]         = {.name = "DANIEL CHANG",         .portrait = "wipeout/textures/chang.cmp", .team = 1, .logo_model = 4},
-		[PILOT_ARIAL_TETSUO]         = {.name = "ARIAL TETSUO",         .portrait = "wipeout/textures/arial.cmp", .team = 2, .logo_model = 6},
-		[PILOT_ANASTASIA_CHEROVOSKI] = {.name = "ANASTASIA CHEROVOSKI", .portrait = "wipeout/textures/anast.cmp", .team = 3, .logo_model = 7},
-		[PILOT_KEL_SOLAAR]           = {.name = "KEL SOLAAR",           .portrait = "wipeout/textures/solar.cmp", .team = 4, .logo_model = 2},
+		[PILOT_JOHN_DEKKA]           = {.team = 0, .logo_model = 0},
+		[PILOT_DANIEL_CHANG]         = {.team = 1, .logo_model = 1},
+		[PILOT_ARIAL_TETSUO]         = {.team = 2, .logo_model = 2},
+		[PILOT_ANASTASIA_CHEROVOSKI] = {.team = 3, .logo_model = 3},
+		[PILOT_KEL_SOLAAR]           = {.team = 4, .logo_model = 4},
 	},
 
 	// .ship_model_to_pilot = {6, 4, 7, 1, 5, 2, 3, 0},
 	// .race_points_for_rank = {9, 7, 5, 3, 2, 1, 0, 0},
 
-	.ship_model_to_pilot = {0, 1, 2, 3, 4},
-	.race_points_for_rank = {9, 7, 5, 3, 2},
+	.ship_model_to_pilot = {3, 0, 2, 1, 4},
+	.race_points_for_rank = {4, 3, 2, 1, 0},
 
 	// SHIP ATTRIBUTES
 	//               TEAM 1   TEAM 2   TEAM 3   TEAM 4
@@ -69,55 +70,59 @@ const game_def_t def = {
 	//    Turn Rate:     **     ****      ***    *****
 
 	.teams = {
-		[TEAM_AG_SYSTEMS] = {
-			.name = "AG SYSTEMS",
-			.logo_model = 2,
-			// .pilots = {0, 1},
-			.pilots = {0},
-			.attributes = {
-				[RACE_CLASS_VENOM]  = {.mass = 150, .thrust_max =  790, .resistance = 140, .turn_rate = TURN_ACCEL(160), .turn_rate_max = TURN_VEL(2560), .skid = 12},
-				// [RACE_CLASS_RAPIER] = {.mass = 150, .thrust_max = 1200, .resistance = 140, .turn_rate = TURN_ACCEL(160), .turn_rate_max = TURN_VEL(2560), .skid = 10},
-				[RACE_CLASS_RAPIER] = {.mass = 150, .thrust_max = 2000, .resistance = 140, .turn_rate = TURN_ACCEL(160), .turn_rate_max = TURN_VEL(2560), .skid = 8},
-			},
-		},
-		[TEAM_AURICOM] = {
-			.name = "AURICOM",
-			.logo_model = 3,
-			// .pilots = {2, 3},
-			.pilots = {1},
-			.attributes = {
-				[RACE_CLASS_VENOM]  = {.mass = 150, .thrust_max =  850, .resistance = 134, .turn_rate = TURN_ACCEL(140), .turn_rate_max = TURN_VEL(1920), .skid = 20},
-				[RACE_CLASS_RAPIER] = {.mass = 150, .thrust_max = 1400, .resistance = 140, .turn_rate = TURN_ACCEL(120), .turn_rate_max = TURN_VEL(1920), .skid = 14},
-			},
-		},
-		[TEAM_QIREX] = {
-			.name = "QIREX",
-			.logo_model = 1,
-			// .pilots = {4, 5},
-			.pilots = {2},
-			.attributes = {
-				[RACE_CLASS_VENOM]  = {.mass = 150, .thrust_max =  850, .resistance = 140, .turn_rate = TURN_ACCEL(120), .turn_rate_max = TURN_VEL(1920), .skid = 24},
-				[RACE_CLASS_RAPIER] = {.mass = 150, .thrust_max = 1400, .resistance = 130, .turn_rate = TURN_ACCEL(140), .turn_rate_max = TURN_VEL(1920), .skid = 16},
-			},
-		},
 		[TEAM_FEISAR] = {
 			.name = "FEISAR",
 			.logo_model = 0,
 			// .pilots = {6, 7},
-			.pilots = {3},
+			.pilots = {0},
 			.attributes = {
 				[RACE_CLASS_VENOM]  = {.mass = 150, .thrust_max =  790, .resistance = 134, .turn_rate = TURN_ACCEL(180), .turn_rate_max = TURN_VEL(2560), .skid = 12},
 				[RACE_CLASS_RAPIER] = {.mass = 150, .thrust_max = 1200, .resistance = 130, .turn_rate = TURN_ACCEL(180), .turn_rate_max = TURN_VEL(2560), .skid =  8},
+				[RACE_CLASS_PHANTOM] = {.mass = 150, .thrust_max = 2000, .resistance = 120, .turn_rate = TURN_ACCEL(180), .turn_rate_max = TURN_VEL(2560), .skid =  8},
+			},
+		},
+		[TEAM_AG_SYSTEMS] = {
+			.name = "AG SYSTEMS",
+			.logo_model = 1,
+			// .pilots = {0, 1},
+			.pilots = {1},
+			.attributes = {
+				[RACE_CLASS_VENOM]  = {.mass = 150, .thrust_max =  790, .resistance = 140, .turn_rate = TURN_ACCEL(160), .turn_rate_max = TURN_VEL(2560), .skid = 12},
+				[RACE_CLASS_RAPIER] = {.mass = 150, .thrust_max = 1200, .resistance = 140, .turn_rate = TURN_ACCEL(160), .turn_rate_max = TURN_VEL(2560), .skid = 10},
+				[RACE_CLASS_PHANTOM] = {.mass = 150, .thrust_max = 2000, .resistance = 130, .turn_rate = TURN_ACCEL(160), .turn_rate_max = TURN_VEL(2560), .skid = 8},
+			},
+		},
+		[TEAM_AURICOM] = {
+			.name = "AURICOM",
+			.logo_model = 2,
+			// .pilots = {2, 3},
+			.pilots = {2},
+			.attributes = {
+				[RACE_CLASS_VENOM]  = {.mass = 150, .thrust_max =  850, .resistance = 134, .turn_rate = TURN_ACCEL(140), .turn_rate_max = TURN_VEL(1920), .skid = 20},
+				[RACE_CLASS_RAPIER] = {.mass = 150, .thrust_max = 1400, .resistance = 140, .turn_rate = TURN_ACCEL(120), .turn_rate_max = TURN_VEL(1920), .skid = 14},
+				[RACE_CLASS_PHANTOM] = {.mass = 150, .thrust_max = 2200, .resistance = 130, .turn_rate = TURN_ACCEL(120), .turn_rate_max = TURN_VEL(1920), .skid = 10},
+			},
+		},
+		[TEAM_QIREX] = {
+			.name = "QIREX",
+			.logo_model = 3,
+			// .pilots = {4, 5},
+			.pilots = {3},
+			.attributes = {
+				[RACE_CLASS_VENOM]  = {.mass = 150, .thrust_max =  850, .resistance = 140, .turn_rate = TURN_ACCEL(120), .turn_rate_max = TURN_VEL(1920), .skid = 24},
+				[RACE_CLASS_RAPIER] = {.mass = 150, .thrust_max = 1400, .resistance = 130, .turn_rate = TURN_ACCEL(140), .turn_rate_max = TURN_VEL(1920), .skid = 16},
+				[RACE_CLASS_PHANTOM] = {.mass = 150, .thrust_max = 2200, .resistance = 130, .turn_rate = TURN_ACCEL(140), .turn_rate_max = TURN_VEL(1920), .skid = 10},
 			},
 		},
 		[TEAM_PIRANHA] = {
 			.name = "PIRANHA",
-			.logo_model = 0,
-			// .pilots = {6, 7}, // TODO FIX PILOTS
-			.pilots = {4}, // TODO FIX PILOTS
+			.logo_model = 4,
+			// .pilots = {6, 7},
+			.pilots = {4},
 			.attributes = {
-				[RACE_CLASS_VENOM]  = {.mass = 150, .thrust_max =  790, .resistance = 134, .turn_rate = TURN_ACCEL(180), .turn_rate_max = TURN_VEL(2560), .skid = 12},
-				[RACE_CLASS_RAPIER] = {.mass = 150, .thrust_max = 1200, .resistance = 130, .turn_rate = TURN_ACCEL(180), .turn_rate_max = TURN_VEL(2560), .skid =  8},
+				[RACE_CLASS_VENOM]  = {.mass = 150, .thrust_max =  790, .resistance = 134, .turn_rate = TURN_ACCEL(140), .turn_rate_max = TURN_VEL(1920), .skid = 8},
+				[RACE_CLASS_RAPIER] = {.mass = 150, .thrust_max = 1500, .resistance = 130, .turn_rate = TURN_ACCEL(120), .turn_rate_max = TURN_VEL(1920), .skid = 8},
+				[RACE_CLASS_PHANTOM] = {.mass = 150, .thrust_max = 2400, .resistance = 130, .turn_rate = TURN_ACCEL(120), .turn_rate_max = TURN_VEL(1920), .skid = 6},
 			},
 		},
 	},
@@ -141,6 +146,15 @@ const game_def_t def = {
 			{.thrust_max = 3950, .thrust_magnitude = 62, .fight_back = 1},
 			{.thrust_max = 4000, .thrust_magnitude = 65, .fight_back = 1},
 		},
+		[RACE_CLASS_PHANTOM] = {
+			{.thrust_max = 4750, .thrust_magnitude = 52, .fight_back = 1},
+			{.thrust_max = 4780, .thrust_magnitude = 55, .fight_back = 1},
+			{.thrust_max = 4800, .thrust_magnitude = 57, .fight_back = 1},
+			{.thrust_max = 4850, .thrust_magnitude = 59, .fight_back = 1},
+			{.thrust_max = 4900, .thrust_magnitude = 62, .fight_back = 1},
+			{.thrust_max = 4950, .thrust_magnitude = 64, .fight_back = 1},
+			{.thrust_max = 5000, .thrust_magnitude = 67, .fight_back = 1},
+		},
 	},
 
 	.circuts = {
@@ -151,6 +165,7 @@ const game_def_t def = {
 				// impossible to align start pos correctly?
 				[RACE_CLASS_VENOM]  = {.path = "wipeout/track201/", .start_line_pos = 11, .behind_speed = 200, .spread_base = 2, .spread_factor = 11, .sky_y_offset = -2000},
 				[RACE_CLASS_RAPIER] = {.path = "wipeout/track201/", .start_line_pos = 11, .behind_speed = 400, .spread_base = 2, .spread_factor = 11, .sky_y_offset = -2000},
+				[RACE_CLASS_PHANTOM] = {.path = "wipeout/track201/", .start_line_pos = 11, .behind_speed = 500, .spread_base = 2, .spread_factor = 11, .sky_y_offset = -2000},
 			}
 		},
 		[CIRCUT_SAGARMATHA] = {
@@ -160,14 +175,16 @@ const game_def_t def = {
 				// impossible to align start pos correctly?
 				[RACE_CLASS_VENOM]  = {.path = "wipeout/track208/", .start_line_pos = 11, .behind_speed = 200, .spread_base = 2, .spread_factor = 11, .sky_y_offset = -2000},
 				[RACE_CLASS_RAPIER] = {.path = "wipeout/track208/", .start_line_pos = 11, .behind_speed = 400, .spread_base = 2, .spread_factor = 11, .sky_y_offset = -2000},
+				[RACE_CLASS_PHANTOM] = {.path = "wipeout/track208/", .start_line_pos = 11, .behind_speed = 500, .spread_base = 2, .spread_factor = 11, .sky_y_offset = -2000},
 			}
 		},
 		[CIRCUT_VALPARAISO] = {
 			.name = "VALPARAISO",
 			.is_bonus_circut = false,
 			.settings = {
-				[RACE_CLASS_VENOM]  = {.path = "wipeout/track213/", .start_line_pos = 15, .behind_speed = 200, .spread_base = 2, .spread_factor = 11, .sky_y_offset = -2000},
-				[RACE_CLASS_RAPIER] = {.path = "wipeout/track213/", .start_line_pos = 15, .behind_speed = 400, .spread_base = 2, .spread_factor = 11, .sky_y_offset = -2000},
+				[RACE_CLASS_VENOM]  = {.path = "wipeout/track213/", .start_line_pos = 15, .behind_speed = 200, .spread_base = 2, .spread_factor = 1, .sky_y_offset = -2000},
+				[RACE_CLASS_RAPIER] = {.path = "wipeout/track213/", .start_line_pos = 15, .behind_speed = 400, .spread_base = 2, .spread_factor = 1, .sky_y_offset = -2000},
+				[RACE_CLASS_PHANTOM] = {.path = "wipeout/track213/", .start_line_pos = 15, .behind_speed = 500, .spread_base = 2, .spread_factor = 1, .sky_y_offset = -2000},
 			}
 		},
 		[CIRCUT_PHENITIA_PARK] = {
@@ -176,6 +193,7 @@ const game_def_t def = {
 			.settings = {
 				[RACE_CLASS_VENOM]  = {.path = "wipeout/track220/", .start_line_pos = 24, .behind_speed = 200, .spread_base = 20, .spread_factor = 11, .sky_y_offset = -1000},
 				[RACE_CLASS_RAPIER] = {.path = "wipeout/track220/", .start_line_pos = 24, .behind_speed = 350, .spread_base = 20, .spread_factor = 11, .sky_y_offset = -1000},
+				[RACE_CLASS_PHANTOM] = {.path = "wipeout/track220/", .start_line_pos = 24, .behind_speed = 550, .spread_base = 20, .spread_factor = 11, .sky_y_offset = -1000},
 			}
 		},
 		[CIRCUT_GARE_D_EUROPA] = {
@@ -184,14 +202,16 @@ const game_def_t def = {
 			.settings = {
 				[RACE_CLASS_VENOM]  = {.path = "wipeout/track202/", .start_line_pos = 24, .behind_speed = 200, .spread_base = 20, .spread_factor = 11, .sky_y_offset = -1000},
 				[RACE_CLASS_RAPIER] = {.path = "wipeout/track202/", .start_line_pos = 24, .behind_speed = 350, .spread_base = 20, .spread_factor = 11, .sky_y_offset = -1000},
+				[RACE_CLASS_PHANTOM] = {.path = "wipeout/track202/", .start_line_pos = 24, .behind_speed = 550, .spread_base = 20, .spread_factor = 11, .sky_y_offset = -1000},
 			}
 		},
 		[CIRCUT_ODESSA_KEYS] = {
 			.name = "ODESSA KEYS",
 			.is_bonus_circut = false,
 			.settings = {
-				[RACE_CLASS_VENOM]  = {.path = "wipeout/track217/", .start_line_pos = 12, .behind_speed = 200, .spread_base = 40, .spread_factor = 11, .sky_y_offset = -3000},
-				[RACE_CLASS_RAPIER] = {.path = "wipeout/track217/", .start_line_pos = 12, .behind_speed = 400, .spread_base = 40, .spread_factor = 11, .sky_y_offset = -3000},
+				[RACE_CLASS_VENOM]  = {.path = "wipeout/track217/", .start_line_pos = 12, .behind_speed = 200, .spread_base = 20, .spread_factor = 8, .sky_y_offset = -3000},
+				[RACE_CLASS_RAPIER] = {.path = "wipeout/track217/", .start_line_pos = 12, .behind_speed = 400, .spread_base = 20, .spread_factor = 8, .sky_y_offset = -3000},
+				[RACE_CLASS_PHANTOM] = {.path = "wipeout/track217/", .start_line_pos = 12, .behind_speed = 500, .spread_base = 20, .spread_factor = 8, .sky_y_offset = -3000},
 			}
 		},
 		[CIRCUT_VOSTOK_ISLAND] = {
@@ -200,6 +220,7 @@ const game_def_t def = {
 			.settings = {
 				[RACE_CLASS_VENOM]  = {.path = "wipeout/track206/", .start_line_pos = 27, .behind_speed = 200, .spread_base = 40, .spread_factor = 11, .sky_y_offset = -3000},
 				[RACE_CLASS_RAPIER] = {.path = "wipeout/track206/", .start_line_pos = 27, .behind_speed = 500, .spread_base = 40, .spread_factor = 11, .sky_y_offset = -3000},
+				[RACE_CLASS_PHANTOM] = {.path = "wipeout/track206/", .start_line_pos = 27, .behind_speed = 600, .spread_base = 40, .spread_factor = 11, .sky_y_offset = -3000},
 			}
 		},
 		[CIRCUT_SPILSKINANKE] = {
@@ -208,6 +229,7 @@ const game_def_t def = {
 			.settings = {
 				[RACE_CLASS_VENOM]  = {.path = "wipeout/track207/", .start_line_pos = 27, .behind_speed = 200, .spread_base = 40, .spread_factor = 11, .sky_y_offset = -3000},
 				[RACE_CLASS_RAPIER] = {.path = "wipeout/track207/", .start_line_pos = 27, .behind_speed = 500, .spread_base = 40, .spread_factor = 11, .sky_y_offset = -3000},
+				[RACE_CLASS_PHANTOM] = {.path = "wipeout/track207/", .start_line_pos = 27, .behind_speed = 600, .spread_base = 40, .spread_factor = 11, .sky_y_offset = -3000},
 			}
 		},
 	},
@@ -440,6 +462,40 @@ save_t save = {
 			},
 		},
 		[RACE_CLASS_RAPIER] = {
+			{
+				[HIGHSCORE_TAB_RACE]       = {.lap_record = 69.50, .entries = {{"AJY", 200.67},{"DLS", 213.50},{"AJS", 228.67},{"MAK", 247.67},{"JED", 263.00}}},
+				[HIGHSCORE_TAB_TIME_TRIAL] = {.lap_record = 69.50, .entries = {{"NCW", 200.67},{"LEE", 213.50},{"STU", 228.67},{"JAS", 247.67},{"ROB", 263.00}}},
+			},
+			{
+				[HIGHSCORE_TAB_RACE]       = {.lap_record = 47.33, .entries = {{"BOR", 134.58},{"ING", 147.00},{"HIS", 162.25},{"COR", 183.08},{ "ES", 198.25}}},
+				[HIGHSCORE_TAB_TIME_TRIAL] = {.lap_record = 47.33, .entries = {{"NIK", 134.58},{"POL", 147.00},{"DAR", 162.25},{"STU", 183.08},{"ROB", 198.25}}},
+			},
+			{
+				[HIGHSCORE_TAB_RACE]       = {.lap_record = 47.83, .entries = {{"AJS", 142.08},{"DLS", 159.42},{"MAK", 178.08},{"JED", 190.25},{"AJY", 206.58}}},
+				[HIGHSCORE_TAB_TIME_TRIAL] = {.lap_record = 47.83, .entries = {{"POL", 142.08},{"JIM", 159.42},{"TIM", 178.08},{"MOC", 190.25},{ "PC", 206.58}}},
+			},
+			{
+				[HIGHSCORE_TAB_RACE]       = {.lap_record = 76.75, .entries = {{"DLS", 224.17},{"DJR", 237.00},{"LEE", 257.50},{"MOC", 272.83},{"MPI", 285.17}}},
+				[HIGHSCORE_TAB_TIME_TRIAL] = {.lap_record = 76.75, .entries = {{"TIM", 224.17},{"JIM", 237.00},{"NIK", 257.50},{"JAS", 272.83},{ "LG", 285.17}}},
+			},
+			{
+				[HIGHSCORE_TAB_RACE]       = {.lap_record = 65.75, .entries = {{"MAK", 191.00},{"STU", 203.67},{"JAS", 221.83},{"ROB", 239.00},{"DOM", 254.50}}},
+				[HIGHSCORE_TAB_TIME_TRIAL] = {.lap_record = 65.75, .entries = {{ "LG", 191.00},{"LOU", 203.67},{"JIM", 221.83},{"HAN", 239.00},{ "NT", 254.50}}},
+			},
+			{
+				[HIGHSCORE_TAB_RACE]       = {.lap_record = 59.23, .entries = {{"JED", 156.67},{"NCW", 170.33},{"LOU", 188.83},{"DAR", 201.00},{"POL", 221.50}}},
+				[HIGHSCORE_TAB_TIME_TRIAL] = {.lap_record = 59.23, .entries = {{"STU", 156.67},{"DAV", 170.33},{"DOM", 188.83},{"MOR", 201.00},{"GAN", 221.50}}},
+			},
+			{
+				[HIGHSCORE_TAB_RACE]       = {.lap_record = 55.00, .entries = {{ "PC", 162.42},{"POL", 179.58},{"DAR", 194.75},{"DAR", 208.92},{"MSC", 224.58}}},
+				[HIGHSCORE_TAB_TIME_TRIAL] = {.lap_record = 55.00, .entries = {{"THA", 162.42},{"NKS", 179.58},{"FOR", 194.75},{"PLA", 208.92},{"YIN", 224.58}}},
+			},
+			{
+				[HIGHSCORE_TAB_RACE]       = {.lap_record = 55.00, .entries = {{ "PC", 162.42},{"POL", 179.58},{"DAR", 194.75},{"DAR", 208.92},{"MSC", 224.58}}},
+				[HIGHSCORE_TAB_TIME_TRIAL] = {.lap_record = 55.00, .entries = {{"THA", 162.42},{"NKS", 179.58},{"FOR", 194.75},{"PLA", 208.92},{"YIN", 224.58}}},
+			},
+		},
+		[RACE_CLASS_PHANTOM] = {
 			{
 				[HIGHSCORE_TAB_RACE]       = {.lap_record = 69.50, .entries = {{"AJY", 200.67},{"DLS", 213.50},{"AJS", 228.67},{"MAK", 247.67},{"JED", 263.00}}},
 				[HIGHSCORE_TAB_TIME_TRIAL] = {.lap_record = 69.50, .entries = {{"NCW", 200.67},{"LEE", 213.50},{"STU", 228.67},{"JAS", 247.67},{"ROB", 263.00}}},
