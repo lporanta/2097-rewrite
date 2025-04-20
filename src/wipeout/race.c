@@ -34,11 +34,8 @@ void race_init(void) {
 	menu_is_scroll_text = false;
 
 	const circut_settings_t *cs = &def.circuts[g.circut].settings[g.race_class];
-	// const circut_settings_t *cs_venom = &def.circuts[g.circut].settings[RACE_CLASS_VENOM];
 	track_load(cs->path);
-	// track_load(cs_venom->path);
 	scene_load(cs->path, cs->sky_y_offset);
-	// scene_load(cs_venom->path, cs_venom->sky_y_offset);
 	
 	// if (g.circut == CIRCUT_SILVERSTREAM && g.race_class == RACE_CLASS_RAPIER) {
 	// 	scene_init_aurora_borealis();	
@@ -109,8 +106,6 @@ void race_update(void) {
 	// Draw 3D
 	render_set_view(g.camera.position, g.camera.angle);
 
-	// render_set_projection_fov(clamp(70.0 + g.ships[g.pilot].speed * 0.001, 30.0, 150.0)); //testing
-
 	render_set_cull_backface(false);
 	scene_draw(&g.camera);	
 	track_draw(&g.camera);
@@ -172,14 +167,14 @@ void race_start(void) {
 void race_restart(void) {
 	race_unpause();
 
-	if (g.race_type == RACE_TYPE_CHAMPIONSHIP) {
-		g.lives--;
-		if (g.lives == 0) {
-			race_release_control();
-			active_menu = game_over_menu_init();
-			return;
-		}
-	}
+	// if (g.race_type == RACE_TYPE_CHAMPIONSHIP) {
+	// 	g.lives--;
+	// 	if (g.lives == 0) {
+	// 		race_release_control();
+	// 		active_menu = game_over_menu_init();
+	// 		return;
+	// 	}
+	// }
 
 	race_start();
 }
@@ -216,60 +211,60 @@ void race_end(void) {
 		}
 	}
 
-	if (g.race_type == RACE_TYPE_CHAMPIONSHIP) {
-		for (int i = 0; i < len(def.race_points_for_rank); i++) {
-			g.race_ranks[i].points = def.race_points_for_rank[i];
-
-			// Find the pilot for this race rank in the championship table
-			for (int j = 0; j < len(g.championship_ranks); j++) {
-				if (g.race_ranks[i].pilot == g.championship_ranks[j].pilot) {
-					g.championship_ranks[j].points += def.race_points_for_rank[i];
-					break;
-				}
-			}
-		}
-		sort(g.championship_ranks, len(g.championship_ranks), sort_points_compare);
-	}
+	// if (g.race_type == RACE_TYPE_CHAMPIONSHIP) {
+	// 	for (int i = 0; i < len(def.race_points_for_rank); i++) {
+	// 		g.race_ranks[i].points = def.race_points_for_rank[i];
+	//
+	// 		// Find the pilot for this race rank in the championship table
+	// 		for (int j = 0; j < len(g.championship_ranks); j++) {
+	// 			if (g.race_ranks[i].pilot == g.championship_ranks[j].pilot) {
+	// 				g.championship_ranks[j].points += def.race_points_for_rank[i];
+	// 				break;
+	// 			}
+	// 		}
+	// 	}
+	// 	sort(g.championship_ranks, len(g.championship_ranks), sort_points_compare);
+	// }
 
 	active_menu = race_stats_menu_init();
 }
 
-void race_next(void) {
-	int next_circut = g.circut + 1;
-
-	// Championship complete
-	if (
-		(save.has_bonus_circuts && next_circut >= NUM_CIRCUTS) ||
-		(!save.has_bonus_circuts && next_circut >= NUM_NON_BONUS_CIRCUTS)
-	) {
-		if (g.race_class == RACE_CLASS_RAPIER) {
-			if (save.has_bonus_circuts) {
-				active_menu = text_scroll_menu_init(def.congratulations.rapier_all_circuts, len(def.congratulations.rapier_all_circuts));
-			}
-			else {
-				save.has_bonus_circuts = true;
-				active_menu = text_scroll_menu_init(def.congratulations.rapier, len(def.congratulations.rapier));
-			}
-		}
-		else {
-			save.has_rapier_class = true;
-			if (save.has_bonus_circuts) {
-				active_menu = text_scroll_menu_init(def.congratulations.venom_all_circuts, len(def.congratulations.venom_all_circuts));
-			}
-			else {
-				active_menu = text_scroll_menu_init(def.congratulations.venom, len(def.congratulations.venom));
-			}
-		}
-		save.is_dirty = true;
-		menu_is_scroll_text = true;
-	}
-
-	// Next track
-	else {
-		g.circut = next_circut;
-		game_set_scene(GAME_SCENE_RACE);
-	}
-}
+// void race_next(void) {
+// 	int next_circut = g.circut + 1;
+//
+// 	// Championship complete
+// 	if (
+// 		(save.has_bonus_circuts && next_circut >= NUM_CIRCUTS) ||
+// 		(!save.has_bonus_circuts && next_circut >= NUM_NON_BONUS_CIRCUTS)
+// 	) {
+// 		if (g.race_class == RACE_CLASS_RAPIER) {
+// 			if (save.has_bonus_circuts) {
+// 				active_menu = text_scroll_menu_init(def.congratulations.rapier_all_circuts, len(def.congratulations.rapier_all_circuts));
+// 			}
+// 			else {
+// 				save.has_bonus_circuts = true;
+// 				active_menu = text_scroll_menu_init(def.congratulations.rapier, len(def.congratulations.rapier));
+// 			}
+// 		}
+// 		else {
+// 			save.has_rapier_class = true;
+// 			if (save.has_bonus_circuts) {
+// 				active_menu = text_scroll_menu_init(def.congratulations.venom_all_circuts, len(def.congratulations.venom_all_circuts));
+// 			}
+// 			else {
+// 				active_menu = text_scroll_menu_init(def.congratulations.venom, len(def.congratulations.venom));
+// 			}
+// 		}
+// 		save.is_dirty = true;
+// 		menu_is_scroll_text = true;
+// 	}
+//
+// 	// Next track
+// 	else {
+// 		g.circut = next_circut;
+// 		game_set_scene(GAME_SCENE_RACE);
+// 	}
+// }
 
 void race_release_control(void) {
 	flags_rm(g.ships[g.pilot].flags, SHIP_RACING);

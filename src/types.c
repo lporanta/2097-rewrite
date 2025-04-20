@@ -123,3 +123,53 @@ void mat4_mul(mat4_t *res, mat4_t *a, mat4_t *b) {
 	res->m[14] = b->m[12] * a->m[2] + b->m[13] * a->m[6] + b->m[14] * a->m[10] + b->m[15] * a->m[14];
 	res->m[15] = b->m[12] * a->m[3] + b->m[13] * a->m[7] + b->m[14] * a->m[11] + b->m[15] * a->m[15];
 }
+
+void mat4_scale(mat4_t *mat, float k) {
+	mat->cols[0][0] *= k;
+	mat->cols[1][0] *= k;
+	mat->cols[2][0] *= k;
+	mat->cols[0][1] *= k;
+	mat->cols[1][1] *= k;
+	mat->cols[2][1] *= k;
+	mat->cols[0][2] *= k;
+	mat->cols[1][2] *= k;
+	mat->cols[2][2] *= k;
+}
+
+vec3_t vec3_angle_from_mat4(mat4_t *mat) {
+	// R = [ 
+	//        R11 , R12 , R13, 
+	//        R21 , R22 , R23,
+	//        R31 , R32 , R33  
+	//     ]
+	//     00 10 20
+	//     01 11 21
+	//     02 12 22
+	float yaw;
+	float pitch;
+	float roll;
+
+	if (mat->cols[0][2] != 1 && mat->cols[0][2] != -1) {
+	     float pitch_1 = -1*asin(mat->cols[0][2]);
+	     float pitch_2 = M_PI - pitch_1;
+	     float roll_1 = atan2( mat->cols[1][2] / cos(pitch_1), mat->cols[2][2] /cos(pitch_1) );
+	     float roll_2 = atan2( mat->cols[1][2] / cos(pitch_2), mat->cols[2][2] /cos(pitch_2) );
+	     float yaw_1 = atan2( mat->cols[0][1] / cos(pitch_1), mat->cols[0][0] / cos(pitch_1) );
+	     float yaw_2 = atan2( mat->cols[0][1] / cos(pitch_2), mat->cols[0][0] / cos(pitch_2) );
+
+	     pitch = pitch_1;
+	     roll = roll_1;
+	     yaw = yaw_1;
+	} else { 
+	     yaw = 0; // anything (we default this to zero)
+	     if (mat->cols[0][2] == -1) { 
+		pitch = M_PI/2.0;
+		roll = yaw + atan2(mat->cols[1][0],mat->cols[2][0]);
+		} else { 
+			pitch = -M_PI/2.0; 
+			roll = -1*yaw + atan2(-1*mat->cols[1][0],-1*mat->cols[2][0]);
+		}
+	}
+
+	return vec3(yaw, pitch, roll);
+}

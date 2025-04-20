@@ -31,8 +31,8 @@ static vec3_t sky_offset;
 static Object *start_booms[SCENE_START_BOOMS_MAX];
 static int start_booms_len;
 
-static Object *oil_pumps[SCENE_OIL_PUMPS_MAX];
-static int oil_pumps_len;
+// static Object *oil_pumps[SCENE_OIL_PUMPS_MAX];
+// static int oil_pumps_len;
 
 static Object *red_lights[SCENE_RED_LIGHTS_MAX];
 static int red_lights_len;
@@ -42,6 +42,12 @@ static int cameras_len;
 
 static Object *fans[SCENE_FANS_MAX];
 static int fans_len;
+
+static Object *train;
+static vec3_t train_origin_initial;
+static vec3_t train_origin_final;
+static float train_lerp_factor;
+static bool train_triggered;
 
 // stand means spectators/crowd
 typedef struct {
@@ -74,9 +80,21 @@ void scene_load(const char *base_path, float sky_y_offset) {
 	sky_offset_initial = vec3(0, sky_y_offset, 0);
 	sky_offset = sky_offset_initial;
 
+	if (g.circut == CIRCUT_GARE_D_EUROPA) {
+		train = objects_load("wipeout2/common/train.prm", image_get_compressed_textures("wipeout2/common/train.cmp"));
+		train_origin_initial = train->origin;
+		// train_origin_final = vec3(train->origin.x, train->origin.y, train->origin.z + 1000);
+		// train_origin_final = vec3(48500.0, 3000.0, -100000.0);
+		// train_origin_final = vec3(61072.0, 102.0, -72262.0);
+		train_origin_final = vec3(61180.0, 40.0, -72262.0);
+		train_lerp_factor = 0;
+		train_triggered = false;
+		printf("load train: %s (%f, %f, %f)\n", train->name, train->origin.x, train->origin.y, train->origin.z);
+	}
+
 	// Collect all objects that need to be updated each frame
 	start_booms_len = 0;
-	oil_pumps_len = 0;
+	// oil_pumps_len = 0;
 	cameras_len = 0;
 	red_lights_len = 0;
 	stands_len = 0;
@@ -84,7 +102,7 @@ void scene_load(const char *base_path, float sky_y_offset) {
 
 	Object *obj = scene_objects;
 	while (obj) {
-		// printf("load obj: %s (%f, %f, %f)\n", obj->name, obj->origin.x, obj->origin.y, obj->origin.z);
+		printf("load obj: %s (%f, %f, %f)\n", obj->name, obj->origin.x, obj->origin.y, obj->origin.z);
 		mat4_set_translation(&obj->mat, obj->origin);
 
 		if (str_starts_with(obj->name, "start")) {
@@ -95,10 +113,10 @@ void scene_load(const char *base_path, float sky_y_offset) {
 			error_if(red_lights_len >= SCENE_RED_LIGHTS_MAX, "SCENE_RED_LIGHTS_MAX reached");
 			red_lights[red_lights_len++] = obj;
 		}
-		else if (str_starts_with(obj->name, "donkey")) {
-			error_if(oil_pumps_len >= SCENE_OIL_PUMPS_MAX, "SCENE_OIL_PUMPS_MAX reached");
-			oil_pumps[oil_pumps_len++] = obj;
-		}
+		// else if (str_starts_with(obj->name, "donkey")) {
+		// 	error_if(oil_pumps_len >= SCENE_OIL_PUMPS_MAX, "SCENE_OIL_PUMPS_MAX reached");
+		// 	oil_pumps[oil_pumps_len++] = obj;
+		// }
 		else if (
 			str_starts_with(obj->name, "lostad") || 
 			str_starts_with(obj->name, "stad_") ||
@@ -125,6 +143,7 @@ void scene_load(const char *base_path, float sky_y_offset) {
 		obj = obj->next;
 	}
 
+
 	aurora_borealis.enabled = false;
 }
 
@@ -139,9 +158,9 @@ void scene_update(void) {
 	for (int i = 0; i < red_lights_len; i++) {
 		scene_pulsate_red_light(red_lights[i]);
 	}
-	for (int i = 0; i < oil_pumps_len; i++) {
-		scene_move_oil_pump(oil_pumps[i]);
-	}
+	// for (int i = 0; i < oil_pumps_len; i++) {
+	// 	scene_move_oil_pump(oil_pumps[i]);
+	// }
 	for (int i = 0; i < cameras_len; i++) {
 		scene_move_cameras(cameras[i]);
 	}
@@ -175,11 +194,7 @@ void scene_update(void) {
 		}
 	}
 	else if (g.circut == CIRCUT_GARE_D_EUROPA) {
-		if (g.ships[g.pilot].section->num > 100) {
-			zeppelin.triggered = true;
-		} else {
-			zeppelin.triggered = false;
-		}
+		zeppelin.triggered = (g.ships[g.pilot].section->num > 100);
 
 		if (zeppelin.triggered) {
 			if (zeppelin.offset.z < 500000) {
@@ -190,6 +205,20 @@ void scene_update(void) {
 			zeppelin.offset = zeppelin.offset_initial;
 			mat4_set_translation(&zeppelin.obj->mat, zeppelin.offset_initial);
 		}
+
+		train_triggered = (g.ships[g.pilot].section->num > 170);
+
+		int train_direction = abs(g.ships[g.pilot].lap % 2);
+
+		if (train_triggered) {
+			train_lerp_factor -= 0.15 * system_tick() * ((train_direction*2)-1);
+			train_lerp_factor = clamp(train_lerp_factor, 0.0, 1.0);
+		} else {
+			train_lerp_factor = train_direction;
+		}
+
+		// g.camera.position = vec3_lerp(train_origin_initial, train_origin_final, 0.8 ); //testing
+		// printf("cam pos: %f, %f, %f\n", g.camera.position.x,g.camera.position.y,g.camera.position.z);
 	}
 }
 
@@ -199,6 +228,19 @@ void scene_draw(camera_t *camera) {
 	mat4_set_translation(&sky_object->mat, vec3_add(camera->position, sky_offset));
 	object_draw(sky_object, &sky_object->mat);
 	render_set_depth_write(true);
+
+	// Train
+	// TODO: train is hacky
+	// there's the origin which is on the track
+	// and there's an eye balled second reference point
+	// which is sort of on the track
+	if (train && train_triggered && train_lerp_factor) {
+		float train_length = 0.065;
+		for (int i = 0; i < 8; i++) {
+			mat4_set_translation(&train->mat, vec3_lerp(train_origin_initial, train_origin_final, -0.1 - i * train_length + train_lerp_factor * 1.6 ));
+			object_draw(train, &train->mat);
+		}
+	}
 
 	// Objects
 
@@ -270,9 +312,9 @@ void scene_pulsate_red_light(Object *obj) {
 	}
 }
 
-void scene_move_oil_pump(Object *pump) {
-	mat4_set_yaw_pitch_roll(&pump->mat, vec3(sin(system_cycle_time() * 0.125 * M_PI * 2), 0, 0));
-}
+// void scene_move_oil_pump(Object *pump) {
+// 	mat4_set_yaw_pitch_roll(&pump->mat, vec3(sin(system_cycle_time() * 0.125 * M_PI * 2), 0, 0));
+// }
 
 void scene_move_cameras(Object *cam) {
 	vec3_t target = vec3_sub(g.ships[g.pilot].position, cam->origin);

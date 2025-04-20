@@ -77,6 +77,7 @@
 char *get_path(const char *dir, const char *file);
 bool str_starts_with(const char *haystack, const char *needle);
 float rand_float(float min, float max);
+float smoothstep(float edge0, float edge1, float x);
 int32_t rand_int(int32_t min, int32_t max); 
 
 bool file_exists(const char *path);

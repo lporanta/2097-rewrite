@@ -541,7 +541,7 @@ void ship_player_update_race(ship_t *self) {
 
 	ship_player_update_sfx(self);
 
-	// printf("player section: %d\n", self->section->num);
+	printf("player section: %d\n", self->section->num);
 	// if (self->section->junction)
 	// 	printf("player section: %d\n", self->section->junction->num);
 
@@ -551,6 +551,7 @@ void ship_player_update_race(ship_t *self) {
 	// 	printf("not pit stop\n");
 	// }
 	// printf("player y: %f\n", self->position.y);
+	// printf("player xyz: %f, %f, %f\n", self->position.x, self->position.y, self->position.z);
 
 }
 

@@ -534,8 +534,6 @@ save_t save = {
 
 game_t g = {0};
 
-
-
 struct {
 	void (*init)(void);
 	void (*update)(void);

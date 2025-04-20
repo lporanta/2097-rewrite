@@ -175,4 +175,6 @@ void mat4_set_roll_pitch_yaw(mat4_t *mat, vec3_t rot);
 void mat4_translate(mat4_t *mat, vec3_t translation);
 void mat4_mul(mat4_t *res, mat4_t *a, mat4_t *b);
 
+void mat4_scale(mat4_t *mat, float k);
+vec3_t vec3_angle_from_mat4(mat4_t *mat);
 #endif

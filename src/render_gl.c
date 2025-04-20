@@ -567,8 +567,8 @@ static const char * const SHADER_POST_FS_CRT = SHADER_SOURCE(
 
 		//color manipulation
 		// color = pow(color, vec3(0.5));
-		// color = mix(color, color*color, 0.4);
-		color = mix(color, pow(color, vec3(0.5)), 0.1);
+		color = mix(color, color*color, 0.4);
+		// color = mix(color, pow(color, vec3(0.5)), 0.1);
 		// color *= 0.7;
 
 		// color = mix(color, smoothstep(0.0, 1.0, color), 0.1);
