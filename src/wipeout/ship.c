@@ -1299,7 +1299,7 @@ void ship_resolve_wing_collision(ship_t *self, track_face_t *face, float directi
 	float angle = vec3_angle(collision_vector, self->dir_forward);
 
 	self->velocity = vec3_mulf(self->velocity, 0.95);
-	self->thrust_mag *= 0.95;
+	// self->thrust_mag *= 0.95;
 	self->position = vec3_add(self->position, vec3_mulf(to_center, fabs(collision_dot) * 32));
 	self->velocity = vec3_add(self->velocity, vec3_mulf(to_center, fabs(collision_dot) * 2048));
 	// printf("c angle: %f\n", angle);
@@ -1347,7 +1347,7 @@ void ship_resolve_nose_collision(ship_t *self, track_face_t *face, float directi
 	vec3_t collision_vector = vec3_sub(self->section->center, face->tris[0].vertices[2].pos);
 	float angle = vec3_angle(collision_vector, self->dir_forward);
 	self->velocity = vec3_sub(self->velocity, vec3_mulf(self->velocity, 0.5));
-	self->thrust_mag *= 0.3;
+	self->thrust_mag *= 0.6;
 	self->velocity = vec3_reflect(self->velocity, face->normal, 2);
 	// self->position = vec3_sub(self->position, vec3_mulf(self->velocity, 0.015625)); // system_tick?
 	self->position = vec3_sub(self->position, vec3_mulf(self->velocity, system_tick())); // system_tick?

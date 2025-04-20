@@ -37,7 +37,6 @@ typedef struct weapon_t {
 	void (*update_func)(struct weapon_t *);
 } weapon_t;
 
-
 weapon_t *weapons;
 int weapons_active = 0;
 
@@ -225,11 +224,98 @@ void weapons_draw(void) {
 				weapon_update_mine_lights(weapon, i);
 			}
 			object_draw(weapon->model, &mat);
+
+			if (weapon->model == weapon_assets.missile) {
+				render_set_depth_write(false);
+				render_set_blend_mode(RENDER_BLEND_LIGHTER);
+				for (int i = 0; i < 4; i++) {
+					mat4_set_yaw_pitch_roll(
+						&mat,
+						vec3_add(weapon->angle, vec3(0,0,i * (M_PI / 2) + system_time() * 2.0 * M_PI))
+					);
+					render_set_model_mat(&mat);
+					render_push_tris((tris_t) {
+						.vertices = {
+							{
+								.pos = {0, 0, 0},
+								.color = rgba(0,0,255,255)
+							},
+							{
+								.pos = {100, -400, 0},
+								.color = rgba(0,0,255,0)
+							},
+							{
+								.pos = {-100, -400, 0},
+								.color = rgba(0,0,255,0)
+							},
+						}
+					}, RENDER_NO_TEXTURE);
+					render_push_tris((tris_t) {
+						.vertices = {
+							{
+								.pos = {0, 0, 0},
+								.color = rgba(100,100,255,255)
+							},
+							{
+								.pos = {150, -200, 0},
+								.color = rgba(0,0,255,0)
+							},
+							{
+								.pos = {-150, -200, 0},
+								.color = rgba(0,0,255,0)
+							},
+						}
+					}, RENDER_NO_TEXTURE);
+				}
+				render_set_blend_mode(RENDER_BLEND_NORMAL);
+			}
+			else if (weapon->model == weapon_assets.ebolt) {
+				render_set_depth_write(false);
+				render_set_blend_mode(RENDER_BLEND_LIGHTER);
+				for (int i = 0; i < 4; i++) {
+					mat4_set_yaw_pitch_roll(
+						&mat,
+						vec3_add(weapon->angle, vec3(0,0,i * (M_PI / 2) + system_time() * 2.0 * M_PI))
+					);
+					render_set_model_mat(&mat);
+					render_push_tris((tris_t) {
+						.vertices = {
+							{
+								.pos = {0, 0, 0},
+								.color = rgba(255,0,255,255)
+							},
+							{
+								.pos = {100, -400, 0},
+								.color = rgba(255,0,255,0)
+							},
+							{
+								.pos = {-100, -400, 0},
+								.color = rgba(255,0,255,0)
+							},
+						}
+					}, RENDER_NO_TEXTURE);
+					render_push_tris((tris_t) {
+						.vertices = {
+							{
+								.pos = {0, 0, 0},
+								.color = rgba(255,100,255,255)
+							},
+							{
+								.pos = {150, -200, 0},
+								.color = rgba(255,0,255,0)
+							},
+							{
+								.pos = {-150, -200, 0},
+								.color = rgba(255,0,255,0)
+							},
+						}
+					}, RENDER_NO_TEXTURE);
+				}
+				render_set_blend_mode(RENDER_BLEND_NORMAL);
+			}
 		}
 	}
 }
-
-
 
 void weapon_set_trajectory(weapon_t *self) {
 	ship_t *ship = self->owner;
@@ -286,7 +372,6 @@ ship_t *weapon_collides_with_ship(weapon_t *self) {
 	return NULL;
 }
 
-
 bool weapon_collides_with_track(weapon_t *self) {
 	if (flags_is(self->section->flags, SECTION_JUMP)) {
 		return false;
@@ -312,7 +397,6 @@ void weapon_update_wait_for_delay(weapon_t *self) {
 	}
 }
 
-
 void weapon_fire_mine(ship_t *ship) {
 	float timer = 0;
 	for (int i = 0; i < WEAPON_MINE_COUNT; i++) {
@@ -325,8 +409,6 @@ void weapon_fire_mine(ship_t *ship) {
 		self->update_func = weapon_update_mine_wait_for_release;
 	}
 }
-
-
 
 void weapon_update_mine_wait_for_release(weapon_t *self) {
 	if (self->timer <= 0) {
@@ -403,7 +485,7 @@ void weapon_fire_missile(ship_t *ship) {
 	self->timer = WEAPON_MISSILE_DURATION;
 	self->model = weapon_assets.missile;
 	self->update_func = weapon_update_missile;
-	self->trail_particle = PARTICLE_TYPE_SMOKE;
+	self->trail_particle = PARTICLE_TYPE_NONE; //smoke
 	self->track_hit_particle = PARTICLE_TYPE_FIRE_WHITE;
 	self->ship_hit_particle = PARTICLE_TYPE_FIRE;
 	self->target = ship->weapon_target;
@@ -483,7 +565,6 @@ void weapon_update_rocket(weapon_t *self) {
 				ship->velocity = vec3_sub(ship->velocity, vec3_mulf(ship->velocity, 0.75));
 				ship->angular_velocity.z += rand_float(-0.1, 0.1);;
 				ship->turn_rate_from_hit = rand_float(-0.1, 0.1);;
-				// SetShake(20);  // FIXME
 				camera_add_shake(&g.camera, 0.2);
 			}
 			else {
@@ -495,7 +576,6 @@ void weapon_update_rocket(weapon_t *self) {
 	}
 }
 
-
 void weapon_fire_ebolt(ship_t *ship) {
 	weapon_t *self = weapon_init(ship);
 	if (!self) {
@@ -505,7 +585,7 @@ void weapon_fire_ebolt(ship_t *ship) {
 	self->timer = WEAPON_EBOLT_DURATION;
 	self->model = weapon_assets.ebolt;
 	self->update_func = weapon_update_ebolt;
-	self->trail_particle = PARTICLE_TYPE_EBOLT;
+	self->trail_particle = PARTICLE_TYPE_NONE; //EBOLT
 	self->track_hit_particle = PARTICLE_TYPE_EBOLT;
 	self->ship_hit_particle = PARTICLE_TYPE_GREENY;
 	self->target = ship->weapon_target;
@@ -571,64 +651,77 @@ void weapon_update_shield(weapon_t *self) {
 	Prm poly = {.primitive = self->model->primitives};
 	int primitives_len = self->model->primitives_len;
 	uint8_t col0, col1, col2, col3;
+	uint8_t a0, a1, a2, a3;
 	int16_t *coords;
-	uint8_t shield_alpha = 48;
+	// uint8_t shield_alpha_factor = (self->timer/WEAPON_SHIELD_DURATION);
 
-	// FIXME: this looks kinda close to the PSX original!?
 	float color_timer = self->timer * 0.05;
 	for (int k = 0; k < primitives_len; k++) {
 		switch (poly.primitive->type) {
 		case PRM_TYPE_G3 :
 			coords = poly.g3->coords;
 
-			col0 = sin(color_timer * coords[0]) * 127 + 128;
-			col1 = sin(color_timer * coords[1]) * 127 + 128;
-			col2 = sin(color_timer * coords[2]) * 127 + 128;
+			a0 = sin(color_timer * coords[0]) * 127 + 12;
+			a1 = sin(color_timer * coords[1]) * 127 + 12;
+			a2 = sin(color_timer * coords[2]) * 127 + 12;
+			// a0 *= shield_alpha_factor;
+			// a1 *= shield_alpha_factor;
+			// a2 *= shield_alpha_factor;
+			col0 = 0;
+			col1 = 0;
+			col2 = 0;
 
 			poly.g3->color[0].r = col0;
 			poly.g3->color[0].g = col0;
 			poly.g3->color[0].b = 255;
-			poly.g3->color[0].a = shield_alpha;
+			poly.g3->color[0].a = a0;
 
 			poly.g3->color[1].r = col1;
 			poly.g3->color[1].g = col1;
 			poly.g3->color[1].b = 255;
-			poly.g3->color[1].a = shield_alpha;
+			poly.g3->color[1].a = a1;
 
 			poly.g3->color[2].r = col2;
 			poly.g3->color[2].g = col2;
 			poly.g3->color[2].b = 255;
-			poly.g3->color[2].a = shield_alpha;
+			poly.g3->color[2].a = a2;
 			poly.g3 += 1;
 			break;
 
 		case PRM_TYPE_G4 :
 			coords = poly.g4->coords;
 
-			col0 = sin(color_timer * coords[0]) * 127 + 128;
-			col1 = sin(color_timer * coords[1]) * 127 + 128;
-			col2 = sin(color_timer * coords[2]) * 127 + 128;
-			col3 = sin(color_timer * coords[3]) * 127 + 128;
+			a0 = sin(color_timer * coords[0]) * 127 + 12;
+			a1 = sin(color_timer * coords[1]) * 127 + 12;
+			a2 = sin(color_timer * coords[2]) * 127 + 12;
+			a3 = sin(color_timer * coords[3]) * 127 + 12;
+			// a0 *= shield_alpha_factor;
+			// a1 *= shield_alpha_factor;
+			// a2 *= shield_alpha_factor;
+			col0 = 0;
+			col1 = 0;
+			col2 = 0;
+			col3 = 0;
 
 			poly.g4->color[0].r = col0;
 			poly.g4->color[0].g = col0;
 			poly.g4->color[0].b = 255;
-			poly.g4->color[0].a = shield_alpha;
+			poly.g4->color[0].a = a0;
 
 			poly.g4->color[1].r = col1;
 			poly.g4->color[1].g = col1;
 			poly.g4->color[1].b = 255;
-			poly.g4->color[1].a = shield_alpha;
+			poly.g4->color[1].a = a1;
 
 			poly.g4->color[2].r = col2;
 			poly.g4->color[2].g = col2;
 			poly.g4->color[2].b = 255;
-			poly.g4->color[2].a = shield_alpha;
+			poly.g4->color[2].a = a2;
 
 			poly.g4->color[3].r = col3;
 			poly.g4->color[3].g = col3;
 			poly.g4->color[3].b = 255;
-			poly.g4->color[3].a = shield_alpha;
+			poly.g4->color[3].a = a3;
 			poly.g4 += 1;
 			break;
 		}

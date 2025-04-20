@@ -206,7 +206,7 @@ void scene_update(void) {
 			mat4_set_translation(&zeppelin.obj->mat, zeppelin.offset_initial);
 		}
 
-		train_triggered = (g.ships[g.pilot].section->num > 170);
+		train_triggered = (g.ships[g.pilot].section->num > 167);
 
 		int train_direction = abs(g.ships[g.pilot].lap % 2);
 
@@ -223,6 +223,9 @@ void scene_update(void) {
 }
 
 void scene_draw(camera_t *camera) {
+	vec3_t cam_pos = camera->position;
+	vec3_t cam_dir = camera_forward(camera);
+
 	// Sky
 	render_set_depth_write(false);
 	mat4_set_translation(&sky_object->mat, vec3_add(camera->position, sky_offset));
@@ -234,11 +237,24 @@ void scene_draw(camera_t *camera) {
 	// there's the origin which is on the track
 	// and there's an eye balled second reference point
 	// which is sort of on the track
+	//
+	// smoothstep if it's a metro station?
+	// but cooler if the metro just passes by?
 	if (train && train_triggered && train_lerp_factor) {
 		float train_length = 0.065;
 		for (int i = 0; i < 8; i++) {
-			mat4_set_translation(&train->mat, vec3_lerp(train_origin_initial, train_origin_final, -0.1 - i * train_length + train_lerp_factor * 1.6 ));
-			object_draw(train, &train->mat);
+			// vec3_t train_car_pos = vec3_lerp(train_origin_initial, train_origin_final, -0.1 - i * train_length + smoothstep(0.0, 1.0, train_lerp_factor) * 1.6 );
+			vec3_t train_car_pos = vec3_lerp(train_origin_initial, train_origin_final, -0.1 - i * train_length + train_lerp_factor * 1.8 );
+			vec3_t diff = vec3_sub(cam_pos, train_car_pos);
+			float cam_dot = vec3_dot(diff, cam_dir);
+			float dist_sq = vec3_dot(diff, diff);
+			if (
+				cam_dot < train->radius && 
+				dist_sq < (RENDER_FADEOUT_FAR * RENDER_FADEOUT_FAR)
+			) {
+				mat4_set_translation(&train->mat, train_car_pos);
+				object_draw(train, &train->mat);
+			}
 		}
 	}
 
@@ -246,8 +262,6 @@ void scene_draw(camera_t *camera) {
 
 	// Calculate the camera forward vector, so we can cull everything that's
 	// behind. Ideally we'd want to do a full frustum culling here. FIXME.
-	vec3_t cam_pos = camera->position;
-	vec3_t cam_dir = camera_forward(camera);
 	Object *object = scene_objects;
 	
 	while (object) {

@@ -301,6 +301,8 @@ void ship_player_update_race(ship_t *self) {
 
 	// self->weapon_type = WEAPON_TYPE_SHIELD; // Test weapon
 
+	self->weapon_type = WEAPON_TYPE_EBOLT; // Test weapon
+	//
 	// self->weapon_type = WEAPON_TYPE_MISSILE; // Test weapon
 
 	// self->weapon_type = WEAPON_TYPE_TURBO; // Test weapon
@@ -409,8 +411,8 @@ void ship_player_update_race(ship_t *self) {
 
 		if (height < 100) {
 			// to reduce bounce
-			// self->velocity = vec3_sub(self->velocity, vec3_mulf(face->normal, 400.0 * 30 * system_tick())); //4096
-			self->velocity = vec3_reflect(self->velocity, face->normal, 0.15);
+			self->velocity = vec3_add(self->velocity, vec3_mulf(face->normal, 4096.0 * 30 * system_tick())); //4096
+			// self->velocity = vec3_reflect(self->velocity, face->normal, 0.15);
 		}
 
 		if (height < 50) {
