@@ -168,9 +168,9 @@ void scene_update(void) {
 			// pit stop fan (-60544.000000, -2576.000000, -23654.000000)
 			if (fans[i]->origin.y == -2576.0) {
 				// this fixes the pit stop fan orientation
-				mat4_set_yaw_pitch_roll(&fans[i]->mat, vec3(0, 0.2, -system_time()));
+				mat4_set_yaw_pitch_roll(&fans[i]->mat, vec3(0, 0.2, -system_time() * M_PI * 2.0 * 0.5));
 			} else {
-				mat4_set_yaw_pitch_roll(&fans[i]->mat, vec3(0, 0, -system_time()));
+				mat4_set_yaw_pitch_roll(&fans[i]->mat, vec3(0, 0, -system_time() * M_PI * 2.0 * 0.5));
 			}
 		}
 	}

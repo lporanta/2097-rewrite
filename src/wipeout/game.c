@@ -121,8 +121,8 @@ const game_def_t def = {
 			.pilots = {4},
 			.attributes = {
 				[RACE_CLASS_VENOM]  = {.mass = 150, .thrust_max =  790, .resistance = 134, .turn_rate = TURN_ACCEL(140), .turn_rate_max = TURN_VEL(1920), .skid = 8},
-				[RACE_CLASS_RAPIER] = {.mass = 150, .thrust_max = 1500, .resistance = 130, .turn_rate = TURN_ACCEL(120), .turn_rate_max = TURN_VEL(1920), .skid = 8},
-				[RACE_CLASS_PHANTOM] = {.mass = 150, .thrust_max = 2400, .resistance = 130, .turn_rate = TURN_ACCEL(120), .turn_rate_max = TURN_VEL(1920), .skid = 6},
+				[RACE_CLASS_RAPIER] = {.mass = 150, .thrust_max = 1500, .resistance = 130, .turn_rate = TURN_ACCEL(130), .turn_rate_max = TURN_VEL(1920), .skid = 8},
+				[RACE_CLASS_PHANTOM] = {.mass = 150, .thrust_max = 2400, .resistance = 120, .turn_rate = TURN_ACCEL(130), .turn_rate_max = TURN_VEL(1920), .skid = 8},
 			},
 		},
 	},
