@@ -76,7 +76,7 @@ const game_def_t def = {
 			// .pilots = {6, 7},
 			.pilots = {0},
 			.attributes = {
-				[RACE_CLASS_VENOM]  = {.mass = 150, .thrust_max =  790, .resistance = 134, .turn_rate = TURN_ACCEL(180), .turn_rate_max = TURN_VEL(2560), .skid = 12},
+				[RACE_CLASS_VENOM]  = {.mass = 150, .thrust_max =  890, .resistance = 134, .turn_rate = TURN_ACCEL(180), .turn_rate_max = TURN_VEL(2560), .skid = 12},
 				[RACE_CLASS_RAPIER] = {.mass = 150, .thrust_max = 1200, .resistance = 130, .turn_rate = TURN_ACCEL(180), .turn_rate_max = TURN_VEL(2560), .skid =  8},
 				[RACE_CLASS_PHANTOM] = {.mass = 150, .thrust_max = 2000, .resistance = 120, .turn_rate = TURN_ACCEL(180), .turn_rate_max = TURN_VEL(2560), .skid =  8},
 			},
@@ -87,7 +87,7 @@ const game_def_t def = {
 			// .pilots = {0, 1},
 			.pilots = {1},
 			.attributes = {
-				[RACE_CLASS_VENOM]  = {.mass = 150, .thrust_max =  790, .resistance = 140, .turn_rate = TURN_ACCEL(160), .turn_rate_max = TURN_VEL(2560), .skid = 12},
+				[RACE_CLASS_VENOM]  = {.mass = 150, .thrust_max =  890, .resistance = 140, .turn_rate = TURN_ACCEL(160), .turn_rate_max = TURN_VEL(2560), .skid = 12},
 				[RACE_CLASS_RAPIER] = {.mass = 150, .thrust_max = 1200, .resistance = 140, .turn_rate = TURN_ACCEL(160), .turn_rate_max = TURN_VEL(2560), .skid = 10},
 				[RACE_CLASS_PHANTOM] = {.mass = 150, .thrust_max = 2000, .resistance = 130, .turn_rate = TURN_ACCEL(160), .turn_rate_max = TURN_VEL(2560), .skid = 8},
 			},
@@ -98,7 +98,7 @@ const game_def_t def = {
 			// .pilots = {2, 3},
 			.pilots = {2},
 			.attributes = {
-				[RACE_CLASS_VENOM]  = {.mass = 150, .thrust_max =  850, .resistance = 134, .turn_rate = TURN_ACCEL(140), .turn_rate_max = TURN_VEL(1920), .skid = 20},
+				[RACE_CLASS_VENOM]  = {.mass = 150, .thrust_max =  950, .resistance = 134, .turn_rate = TURN_ACCEL(140), .turn_rate_max = TURN_VEL(1920), .skid = 20},
 				[RACE_CLASS_RAPIER] = {.mass = 150, .thrust_max = 1400, .resistance = 140, .turn_rate = TURN_ACCEL(120), .turn_rate_max = TURN_VEL(1920), .skid = 14},
 				[RACE_CLASS_PHANTOM] = {.mass = 150, .thrust_max = 2200, .resistance = 130, .turn_rate = TURN_ACCEL(120), .turn_rate_max = TURN_VEL(1920), .skid = 10},
 			},
@@ -109,7 +109,7 @@ const game_def_t def = {
 			// .pilots = {4, 5},
 			.pilots = {3},
 			.attributes = {
-				[RACE_CLASS_VENOM]  = {.mass = 150, .thrust_max =  850, .resistance = 140, .turn_rate = TURN_ACCEL(120), .turn_rate_max = TURN_VEL(1920), .skid = 24},
+				[RACE_CLASS_VENOM]  = {.mass = 150, .thrust_max =  950, .resistance = 140, .turn_rate = TURN_ACCEL(120), .turn_rate_max = TURN_VEL(1920), .skid = 24},
 				[RACE_CLASS_RAPIER] = {.mass = 150, .thrust_max = 1400, .resistance = 130, .turn_rate = TURN_ACCEL(140), .turn_rate_max = TURN_VEL(1920), .skid = 16},
 				[RACE_CLASS_PHANTOM] = {.mass = 150, .thrust_max = 2200, .resistance = 130, .turn_rate = TURN_ACCEL(140), .turn_rate_max = TURN_VEL(1920), .skid = 10},
 			},
@@ -120,7 +120,7 @@ const game_def_t def = {
 			// .pilots = {6, 7},
 			.pilots = {4},
 			.attributes = {
-				[RACE_CLASS_VENOM]  = {.mass = 150, .thrust_max =  790, .resistance = 134, .turn_rate = TURN_ACCEL(140), .turn_rate_max = TURN_VEL(1920), .skid = 8},
+				[RACE_CLASS_VENOM]  = {.mass = 150, .thrust_max =  890, .resistance = 134, .turn_rate = TURN_ACCEL(140), .turn_rate_max = TURN_VEL(1920), .skid = 8},
 				[RACE_CLASS_RAPIER] = {.mass = 150, .thrust_max = 1500, .resistance = 130, .turn_rate = TURN_ACCEL(130), .turn_rate_max = TURN_VEL(1920), .skid = 8},
 				[RACE_CLASS_PHANTOM] = {.mass = 150, .thrust_max = 2400, .resistance = 120, .turn_rate = TURN_ACCEL(130), .turn_rate_max = TURN_VEL(1920), .skid = 8},
 			},
@@ -147,13 +147,13 @@ const game_def_t def = {
 			{.thrust_max = 4000, .thrust_magnitude = 65, .fight_back = 1},
 		},
 		[RACE_CLASS_PHANTOM] = {
-			{.thrust_max = 4750, .thrust_magnitude = 52, .fight_back = 1},
-			{.thrust_max = 4780, .thrust_magnitude = 55, .fight_back = 1},
-			{.thrust_max = 4800, .thrust_magnitude = 57, .fight_back = 1},
-			{.thrust_max = 4850, .thrust_magnitude = 59, .fight_back = 1},
-			{.thrust_max = 4900, .thrust_magnitude = 62, .fight_back = 1},
-			{.thrust_max = 4950, .thrust_magnitude = 64, .fight_back = 1},
-			{.thrust_max = 5000, .thrust_magnitude = 67, .fight_back = 1},
+			{.thrust_max = 4750, .thrust_magnitude = 62, .fight_back = 1},
+			{.thrust_max = 4780, .thrust_magnitude = 65, .fight_back = 1},
+			{.thrust_max = 4800, .thrust_magnitude = 67, .fight_back = 1},
+			{.thrust_max = 4850, .thrust_magnitude = 69, .fight_back = 1},
+			{.thrust_max = 4900, .thrust_magnitude = 72, .fight_back = 1},
+			{.thrust_max = 4950, .thrust_magnitude = 74, .fight_back = 1},
+			{.thrust_max = 5000, .thrust_magnitude = 77, .fight_back = 1},
 		},
 	},
 

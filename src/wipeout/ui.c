@@ -56,7 +56,7 @@ char_set_t char_set[UI_SIZE_MAX] = {
 uint16_t icon_textures[UI_ICON_MAX];
 
 void ui_load(void) {
-	texture_list_t tl = image_get_compressed_textures("wipeout/textures/drfonts.cmp");
+	texture_list_t tl = image_get_compressed_textures("wipeout2/textures/drfonts.cmp");
 	char_set[UI_SIZE_16].texture   = texture_from_list(tl, 0);
 	char_set[UI_SIZE_12].texture   = texture_from_list(tl, 1);
 	char_set[UI_SIZE_8 ].texture   = texture_from_list(tl, 2);

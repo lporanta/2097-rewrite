@@ -231,7 +231,7 @@ void weapons_draw(void) {
 				for (int i = 0; i < 4; i++) {
 					mat4_set_yaw_pitch_roll(
 						&mat,
-						vec3_add(weapon->angle, vec3(0,0,i * (M_PI / 2) + system_time() * 2.0 * M_PI))
+						vec3_add(g.camera.angle, vec3(0,0,i * (M_PI / 2) + system_time() * 1.5 * M_PI))
 					);
 					render_set_model_mat(&mat);
 					render_push_tris((tris_t) {
@@ -275,7 +275,7 @@ void weapons_draw(void) {
 				for (int i = 0; i < 4; i++) {
 					mat4_set_yaw_pitch_roll(
 						&mat,
-						vec3_add(weapon->angle, vec3(0,0,i * (M_PI / 2) + system_time() * 2.0 * M_PI))
+						vec3_add(g.camera.angle, vec3(0,0,i * (M_PI / 2) + system_time() * 1.5 * M_PI))
 					);
 					render_set_model_mat(&mat);
 					render_push_tris((tris_t) {
@@ -313,6 +313,50 @@ void weapons_draw(void) {
 				}
 				render_set_blend_mode(RENDER_BLEND_NORMAL);
 			}
+			else if (weapon->model == weapon_assets.rocket) {
+				render_set_depth_write(false);
+				render_set_blend_mode(RENDER_BLEND_LIGHTER);
+				for (int i = 0; i < 4; i++) {
+					mat4_set_yaw_pitch_roll(
+						&mat,
+						vec3_add(g.camera.angle, vec3(0,0,i * (M_PI / 2) + system_time() * 1.5 * M_PI))
+					);
+					render_set_model_mat(&mat);
+					render_push_tris((tris_t) {
+						.vertices = {
+							{
+								.pos = {0, 0, 0},
+								.color = rgba(255,100,0,255)
+							},
+							{
+								.pos = {100, -400, 0},
+								.color = rgba(255,100,0,0)
+							},
+							{
+								.pos = {-100, -400, 0},
+								.color = rgba(255,100,0,0)
+							},
+						}
+					}, RENDER_NO_TEXTURE);
+					render_push_tris((tris_t) {
+						.vertices = {
+							{
+								.pos = {0, 0, 0},
+								.color = rgba(255,255,255,255)
+							},
+							{
+								.pos = {150, -200, 0},
+								.color = rgba(255,100,0,0)
+							},
+							{
+								.pos = {-150, -200, 0},
+								.color = rgba(255,100,0,0)
+							},
+						}
+					}, RENDER_NO_TEXTURE);
+				}
+				render_set_blend_mode(RENDER_BLEND_NORMAL);
+			}
 		}
 	}
 }
@@ -323,6 +367,23 @@ void weapon_set_trajectory(weapon_t *self) {
 
 	vec3_t face_point = face->tris[0].vertices[0].pos;
 	vec3_t target = vec3_add(ship->position, vec3_mulf(ship->dir_forward, 64));
+	float target_height = vec3_distance_to_plane(target, face_point, face->normal);
+	float ship_height = vec3_distance_to_plane(target, face_point, face->normal);
+
+	float nudge = target_height * 0.95 - ship_height;
+
+	self->acceleration = vec3_sub(vec3_sub(target, vec3_mulf(face->normal, nudge)), ship->position);
+	self->velocity = vec3_mulf(ship->velocity, 0.015625);
+	self->angle = ship->angle;
+}
+
+void weapon_set_offset_trajectory(weapon_t *self, float offset) {
+	ship_t *ship = self->owner;
+	track_face_t *face = track_section_get_base_face(ship->section);
+
+	vec3_t face_point = face->tris[0].vertices[0].pos;
+	vec3_t target = vec3_add(ship->position, vec3_mulf(ship->dir_forward, 64));
+	target = vec3_add(target, vec3_mulf(ship->dir_right, offset));
 	float target_height = vec3_distance_to_plane(target, face_point, face->normal);
 	float ship_height = vec3_distance_to_plane(target, face_point, face->normal);
 
@@ -529,22 +590,27 @@ void weapon_update_missile(weapon_t *self) {
 }
 
 void weapon_fire_rocket(ship_t *ship) {
-	weapon_t *self = weapon_init(ship);
-	if (!self) {
-		return;
-	}
+	float offset = 8;
+	for (int i = 0; i < 3; i++) {
+		weapon_t *self = weapon_init(ship);
+		if (!self) {
+			return;
+		}
 
-	self->timer = WEAPON_ROCKET_DURATION;
-	self->model = weapon_assets.rocket;
-	self->update_func = weapon_update_rocket;
-	self->trail_particle = PARTICLE_TYPE_SMOKE;
-	self->track_hit_particle = PARTICLE_TYPE_FIRE_WHITE;
-	self->ship_hit_particle = PARTICLE_TYPE_FIRE;
-	self->drag = 0.03125;
-	weapon_set_trajectory(self);
+		self->timer = WEAPON_ROCKET_DURATION;
+		self->model = weapon_assets.rocket;
+		self->update_func = weapon_update_rocket;
+		self->trail_particle = PARTICLE_TYPE_NONE; //SMOKE
+		self->track_hit_particle = PARTICLE_TYPE_FIRE_WHITE;
+		self->ship_hit_particle = PARTICLE_TYPE_FIRE;
+		// self->drag = 0.03125;
+		self->drag = 0.04125;
+		// weapon_set_trajectory(self);
+		weapon_set_offset_trajectory(self, -offset+i*offset);
 
-	if (self->owner->pilot == g.pilot) {
-		sfx_play(SFX_MISSILE_FIRE);
+		if (i == 0 && self->owner->pilot == g.pilot) {
+			sfx_play(SFX_MISSILE_FIRE);
+		}
 	}
 }
 
@@ -661,9 +727,9 @@ void weapon_update_shield(weapon_t *self) {
 		case PRM_TYPE_G3 :
 			coords = poly.g3->coords;
 
-			a0 = sin(color_timer * coords[0]) * 127 + 12;
-			a1 = sin(color_timer * coords[1]) * 127 + 12;
-			a2 = sin(color_timer * coords[2]) * 127 + 12;
+			a0 = sin(color_timer * coords[0]) * 127 + 18;
+			a1 = sin(color_timer * coords[1]) * 127 + 18;
+			a2 = sin(color_timer * coords[2]) * 127 + 18;
 			// a0 *= shield_alpha_factor;
 			// a1 *= shield_alpha_factor;
 			// a2 *= shield_alpha_factor;
@@ -691,10 +757,10 @@ void weapon_update_shield(weapon_t *self) {
 		case PRM_TYPE_G4 :
 			coords = poly.g4->coords;
 
-			a0 = sin(color_timer * coords[0]) * 127 + 12;
-			a1 = sin(color_timer * coords[1]) * 127 + 12;
-			a2 = sin(color_timer * coords[2]) * 127 + 12;
-			a3 = sin(color_timer * coords[3]) * 127 + 12;
+			a0 = sin(color_timer * coords[0]) * 127 + 18;
+			a1 = sin(color_timer * coords[1]) * 127 + 18;
+			a2 = sin(color_timer * coords[2]) * 127 + 18;
+			a3 = sin(color_timer * coords[3]) * 127 + 18;
 			// a0 *= shield_alpha_factor;
 			// a1 *= shield_alpha_factor;
 			// a2 *= shield_alpha_factor;

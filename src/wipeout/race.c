@@ -124,7 +124,7 @@ void race_update(void) {
 		ui_draw_text("DEMO MODE", ui_scaled_pos(UI_POS_TOP | UI_POS_CENTER, vec2i(-56, 24)), UI_SIZE_8, UI_COLOR_ACCENT);
 	}
 
-	if (flags_is(g.ships[g.pilot].flags, SHIP_RACING)) {
+	if (flags_is(g.ships[g.pilot].flags, SHIP_RACING) && save.show_hud) {
 		hud_draw(&g.ships[g.pilot]);
 	}
 

@@ -300,11 +300,9 @@ void ship_player_update_race(ship_t *self) {
 	// WEAPON_TYPE_MAX      10
 
 	// self->weapon_type = WEAPON_TYPE_SHIELD; // Test weapon
-
-	self->weapon_type = WEAPON_TYPE_EBOLT; // Test weapon
-	//
+	// self->weapon_type = WEAPON_TYPE_EBOLT; // Test weapon
+	// self->weapon_type = WEAPON_TYPE_ROCKET; // Test weapon
 	// self->weapon_type = WEAPON_TYPE_MISSILE; // Test weapon
-
 	// self->weapon_type = WEAPON_TYPE_TURBO; // Test weapon
 
 	if (input_pressed(A_FIRE) && self->weapon_type != WEAPON_TYPE_NONE) {
@@ -411,7 +409,7 @@ void ship_player_update_race(ship_t *self) {
 
 		if (height < 100) {
 			// to reduce bounce
-			self->velocity = vec3_add(self->velocity, vec3_mulf(face->normal, 4096.0 * 30 * system_tick())); //4096
+			self->velocity = vec3_add(self->velocity, vec3_mulf(face->normal, 2048.0 * 30 * system_tick())); //4096
 			// self->velocity = vec3_reflect(self->velocity, face->normal, 0.15);
 		}
 
