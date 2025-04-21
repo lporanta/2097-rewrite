@@ -66,19 +66,21 @@ void ships_init(section_t *section) {
 
 	// Randomize order for single race or new championship
 	// if (g.race_type != RACE_TYPE_CHAMPIONSHIP || g.circut == CIRCUT_ALTIMA_VII) {
-	if (g.race_type != RACE_TYPE_CHAMPIONSHIP) {
-		shuffle(ranks_to_pilots, len(ranks_to_pilots));
-	}
+	// if (g.race_type != RACE_TYPE_CHAMPIONSHIP) {
+	// 	shuffle(ranks_to_pilots, len(ranks_to_pilots));
+	// }
+
+	shuffle(ranks_to_pilots, len(ranks_to_pilots));
 
 	// Randomize some tiers in an ongoing championship
-	else if (g.race_type == RACE_TYPE_CHAMPIONSHIP) {
-		// Initialize with current championship order
-		for (int i = 0; i < len(g.ships); i++) {
-			ranks_to_pilots[i] = g.championship_ranks[i].pilot;
-		}		
-		shuffle(ranks_to_pilots, 2); // shuffle 0..1
-		shuffle(ranks_to_pilots + 4, len(ranks_to_pilots)-5); // shuffle 4..len-1
-	}
+	// else if (g.race_type == RACE_TYPE_CHAMPIONSHIP) {
+	// 	// Initialize with current championship order
+	// 	for (int i = 0; i < len(g.ships); i++) {
+	// 		ranks_to_pilots[i] = g.championship_ranks[i].pilot;
+	// 	}		
+	// 	shuffle(ranks_to_pilots, 2); // shuffle 0..1
+	// 	shuffle(ranks_to_pilots + 4, len(ranks_to_pilots)-5); // shuffle 4..len-1
+	// }
 
 	// player is always last
 	for (int i = 0; i < len(ranks_to_pilots)-1; i++) {
@@ -87,7 +89,7 @@ void ships_init(section_t *section) {
 		}
 	}
 
-
+	// TODO: something isn't right here
 	int start_line_pos = def.circuts[g.circut].settings[g.race_class].start_line_pos;
 	for (int i = 0; i < start_line_pos - 15; i++) {
 		section = section->next;
@@ -168,7 +170,6 @@ void ships_draw(void) {
 		ship_draw(&g.ships[i]);
 	}
 
-
 	// Shadows
 	render_set_model_mat(&mat4_identity());
 
@@ -190,7 +191,7 @@ void ships_draw(void) {
 	render_set_depth_offset(0.0);
 	render_set_depth_write(true);
 	
-	// engine flare
+	// Engine flare and trail
 	for (int i = 0; i < len(g.ships); i++) {
 		if (
 			(g.race_type == RACE_TYPE_TIME_TRIAL && i != g.pilot) ||
@@ -499,7 +500,7 @@ void ship_draw_flare_psx(ship_t *self) {
 
 	// rgba_t color = rgba(0,0,255,clamp(((1+sin(system_time()*20.0))/2.0)*vec3_len(self->thrust)/155.0,90,255));
 	// float thrust_factor = clamp(vec3_len(self->thrust))/20000.0,0,1.0);
-	float thrust_factor = clamp(self->thrust_mag-10,0,300.0)/300.0;
+	float thrust_factor = clamp(self->thrust_mag-10,0,500.0)/500.0;
 	if (self->pilot != g.pilot || self->lap >= NUM_LAPS || g.is_attract_mode) {
 		thrust_factor = 1.0;
 	}
@@ -1319,7 +1320,7 @@ void ship_resolve_wing_collision(ship_t *self, track_face_t *face, float directi
 		wing_pos = vec3_sub(self->position, vec3_mulf(vec3_sub(self->dir_right, self->dir_forward), 256)); // >> 4??
 	}
 
-	// wing yaw 2097
+	// wing yaw
 	if (direction > 0) {
 		self->angular_velocity.y += 0.1;
 	}

@@ -206,12 +206,12 @@ void scene_update(void) {
 			mat4_set_translation(&zeppelin.obj->mat, zeppelin.offset_initial);
 		}
 
-		train_triggered = (g.ships[g.pilot].section->num > 170);
+		train_triggered = (g.ships[g.pilot].section->num > 165);
 
 		int train_direction = abs(g.ships[g.pilot].lap % 2);
 
 		if (train_triggered) {
-			train_lerp_factor -= 0.15 * system_tick() * ((train_direction*2)-1);
+			train_lerp_factor -= 0.10 * system_tick() * ((train_direction*2)-1);
 			train_lerp_factor = clamp(train_lerp_factor, 0.0, 1.0);
 		} else {
 			train_lerp_factor = train_direction;

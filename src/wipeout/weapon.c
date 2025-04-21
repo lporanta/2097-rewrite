@@ -583,7 +583,7 @@ void weapon_update_missile(weapon_t *self) {
 			else {
 				ship->speed = ship->speed * 0.03125;
 				ship->angular_velocity.z += 10 * M_PI;
-				ship->turn_rate_from_hit = rand_float(-M_PI, M_PI);
+				ship->turn_rate_from_hit = rand_float(-2.0*M_PI, 2.0*M_PI);
 			}
 		}
 	}
@@ -636,7 +636,7 @@ void weapon_update_rocket(weapon_t *self) {
 			else {
 				ship->speed = ship->speed * 0.03125;
 				ship->angular_velocity.z += 10 * M_PI;
-				ship->turn_rate_from_hit = rand_float(-M_PI, M_PI);
+				ship->turn_rate_from_hit = rand_float(-2.0*M_PI, 2.0*M_PI);
 			}
 		}
 	}
