@@ -301,7 +301,7 @@ void ship_player_update_race(ship_t *self) {
 
 	// self->weapon_type = WEAPON_TYPE_SHIELD; // Test weapon
 	// self->weapon_type = WEAPON_TYPE_EBOLT; // Test weapon
-	// self->weapon_type = WEAPON_TYPE_ROCKET; // Test weapon
+	self->weapon_type = WEAPON_TYPE_ROCKET; // Test weapon
 	// self->weapon_type = WEAPON_TYPE_MISSILE; // Test weapon
 	// self->weapon_type = WEAPON_TYPE_TURBO; // Test weapon
 

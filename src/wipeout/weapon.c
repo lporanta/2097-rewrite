@@ -225,10 +225,12 @@ void weapons_draw(void) {
 			}
 			object_draw(weapon->model, &mat);
 
+			bool is_long_axis;
 			if (weapon->model == weapon_assets.missile) {
 				render_set_depth_write(false);
 				render_set_blend_mode(RENDER_BLEND_LIGHTER);
 				for (int i = 0; i < 4; i++) {
+					is_long_axis = (i % 2 == 0);
 					mat4_set_yaw_pitch_roll(
 						&mat,
 						vec3_add(g.camera.angle, vec3(0,0,i * (M_PI / 2) + system_time() * 1.5 * M_PI))
@@ -241,11 +243,11 @@ void weapons_draw(void) {
 								.color = rgba(0,0,255,255)
 							},
 							{
-								.pos = {100, -400, 0},
+								.pos = {100, -200 - is_long_axis * 200, 0},
 								.color = rgba(0,0,255,0)
 							},
 							{
-								.pos = {-100, -400, 0},
+								.pos = {-100, -200 - is_long_axis * 200, 0},
 								.color = rgba(0,0,255,0)
 							},
 						}
@@ -273,6 +275,7 @@ void weapons_draw(void) {
 				render_set_depth_write(false);
 				render_set_blend_mode(RENDER_BLEND_LIGHTER);
 				for (int i = 0; i < 4; i++) {
+					is_long_axis = (i % 2 == 0);
 					mat4_set_yaw_pitch_roll(
 						&mat,
 						vec3_add(g.camera.angle, vec3(0,0,i * (M_PI / 2) + system_time() * 1.5 * M_PI))
@@ -285,11 +288,11 @@ void weapons_draw(void) {
 								.color = rgba(255,0,255,255)
 							},
 							{
-								.pos = {100, -400, 0},
+								.pos = {100, -200 - is_long_axis * 200, 0},
 								.color = rgba(255,0,255,0)
 							},
 							{
-								.pos = {-100, -400, 0},
+								.pos = {-100, -200 - is_long_axis * 200, 0},
 								.color = rgba(255,0,255,0)
 							},
 						}
@@ -317,6 +320,7 @@ void weapons_draw(void) {
 				render_set_depth_write(false);
 				render_set_blend_mode(RENDER_BLEND_LIGHTER);
 				for (int i = 0; i < 4; i++) {
+					is_long_axis = (i % 2 == 0);
 					mat4_set_yaw_pitch_roll(
 						&mat,
 						vec3_add(g.camera.angle, vec3(0,0,i * (M_PI / 2) + system_time() * 1.5 * M_PI))
@@ -329,11 +333,11 @@ void weapons_draw(void) {
 								.color = rgba(255,100,0,255)
 							},
 							{
-								.pos = {100, -400, 0},
+								.pos = {100, -200 - is_long_axis * 200, 0},
 								.color = rgba(255,100,0,0)
 							},
 							{
-								.pos = {-100, -400, 0},
+								.pos = {-100, -200 - is_long_axis * 200, 0},
 								.color = rgba(255,100,0,0)
 							},
 						}
@@ -383,12 +387,13 @@ void weapon_set_offset_trajectory(weapon_t *self, float offset) {
 
 	vec3_t face_point = face->tris[0].vertices[0].pos;
 	vec3_t target = vec3_add(ship->position, vec3_mulf(ship->dir_forward, 64));
-	target = vec3_add(target, vec3_mulf(ship->dir_right, offset));
+	// target = vec3_add(target, vec3_mulf(ship->dir_right, offset));
 	float target_height = vec3_distance_to_plane(target, face_point, face->normal);
 	float ship_height = vec3_distance_to_plane(target, face_point, face->normal);
 
 	float nudge = target_height * 0.95 - ship_height;
 
+	self->position = vec3_add(self->position, vec3_mulf(ship->dir_right, offset));
 	self->acceleration = vec3_sub(vec3_sub(target, vec3_mulf(face->normal, nudge)), ship->position);
 	self->velocity = vec3_mulf(ship->velocity, 0.015625);
 	self->angle = ship->angle;
@@ -590,7 +595,7 @@ void weapon_update_missile(weapon_t *self) {
 }
 
 void weapon_fire_rocket(ship_t *ship) {
-	float offset = 8;
+	float offset = 512;
 	for (int i = 0; i < 3; i++) {
 		weapon_t *self = weapon_init(ship);
 		if (!self) {
