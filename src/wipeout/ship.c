@@ -767,6 +767,7 @@ void ship_draw_player_trail(ship_t *self) {
 	render_set_blend_mode(RENDER_BLEND_LIGHTER);
 	// render_set_depth_offset(-32.0);
 	render_set_depth_offset(0.0);
+	render_set_cull_backface(false);
 
 	uint16_t half_width = 40;
 	uint16_t length = 60 + speed_factor * 160; //120
@@ -786,109 +787,104 @@ void ship_draw_player_trail(ship_t *self) {
 	int loc_0;
 	int loc_1;
 	int alpha;
-	for (int j = 0; j < 2; j++) {
-		if (j) {
-			mat4_set_yaw_pitch_roll(m, vec3(self->angle.x, self->angle.y, M_PI+self->angle.z));
-			render_set_model_mat(m);
-		}
-		for (int i = 0; i < 10; i++) {
-			loc_0 = (NUM_SHIP_TRAIL_POINTS + self->trail_buffer_loc - i) % NUM_SHIP_TRAIL_POINTS;
-			loc_1 = (NUM_SHIP_TRAIL_POINTS + self->trail_buffer_loc - i - 1) % NUM_SHIP_TRAIL_POINTS;
-			alpha = (1.0 - ((float)i/(NUM_SHIP_TRAIL_POINTS-2))) * 255;
+	for (int i = 0; i < 10; i++) {
+		loc_0 = (NUM_SHIP_TRAIL_POINTS + self->trail_buffer_loc - i) % NUM_SHIP_TRAIL_POINTS;
+		loc_1 = (NUM_SHIP_TRAIL_POINTS + self->trail_buffer_loc - i - 1) % NUM_SHIP_TRAIL_POINTS;
+		alpha = (1.0 - ((float)i/(NUM_SHIP_TRAIL_POINTS-2))) * 255;
 
-			// vertices
-			vertex_t v_left_0 = self->trail_buffer[loc_0].left;
-			vertex_t v_center_0 = self->trail_buffer[loc_0].center;
-			vertex_t v_right_0 = self->trail_buffer[loc_0].right;
-			vertex_t v_left_1 = self->trail_buffer[loc_1].left;
-			vertex_t v_center_1 = self->trail_buffer[loc_1].center;
-			vertex_t v_right_1 = self->trail_buffer[loc_1].right;
-			//
-			// hl_upper = (i == random_bright0 || i == random_bright1);
-			// hl_lower = (i+1 == random_bright0 || i+1 == random_bright1);
-			//
-			// if (i == 0 && hl_lower) {
-			// 	hl_upper = true;
-			// }
+		// vertices
+		vertex_t v_left_0 = self->trail_buffer[loc_0].left;
+		vertex_t v_center_0 = self->trail_buffer[loc_0].center;
+		vertex_t v_right_0 = self->trail_buffer[loc_0].right;
+		vertex_t v_left_1 = self->trail_buffer[loc_1].left;
+		vertex_t v_center_1 = self->trail_buffer[loc_1].center;
+		vertex_t v_right_1 = self->trail_buffer[loc_1].right;
+		//
+		// hl_upper = (i == random_bright0 || i == random_bright1);
+		// hl_lower = (i+1 == random_bright0 || i+1 == random_bright1);
+		//
+		// if (i == 0 && hl_lower) {
+		// 	hl_upper = true;
+		// }
 
-			// left side
-			render_push_tris((tris_t) {
-				.vertices = {
-					{
-						.pos = {-half_width, 0, -i*length},
-						.color = v_left_0.color
-					},
-					{
-						.pos = {-half_width, 0, -length-i*length},
-						.color = v_left_1.color
-					},
-					{
-						// center vertex upper
-						.pos = {0, 0, -i*length},
-						.color = v_center_0.color
-					},
-				}
-			}, RENDER_NO_TEXTURE);
-			render_push_tris((tris_t) {
-				.vertices = {
-					{
-						// center vertex upper
-						.pos = {0, 0, -i*length},
-						.color = v_center_0.color
-					},
-					{
-						.pos = {-half_width, 0, -length-i*length},
-						.color = v_left_1.color
-					},
-					{
-						// center vertex lower
-						.pos = {0, 0, -length-i*length},
-						.color = v_center_1.color
-					},
-				}
-			}, RENDER_NO_TEXTURE);
+		// left side
+		render_push_tris((tris_t) {
+			.vertices = {
+				{
+					.pos = {-half_width, 0, -i*length},
+					.color = v_left_0.color
+				},
+				{
+					.pos = {-half_width, 0, -length-i*length},
+					.color = v_left_1.color
+				},
+				{
+					// center vertex upper
+					.pos = {0, 0, -i*length},
+					.color = v_center_0.color
+				},
+			}
+		}, RENDER_NO_TEXTURE);
+		render_push_tris((tris_t) {
+			.vertices = {
+				{
+					// center vertex upper
+					.pos = {0, 0, -i*length},
+					.color = v_center_0.color
+				},
+				{
+					.pos = {-half_width, 0, -length-i*length},
+					.color = v_left_1.color
+				},
+				{
+					// center vertex lower
+					.pos = {0, 0, -length-i*length},
+					.color = v_center_1.color
+				},
+			}
+		}, RENDER_NO_TEXTURE);
 
-			// right side
-			render_push_tris((tris_t) {
-				.vertices = {
-					{
-						// center vertex upper
-						.pos = {0, 0, -i*length},
-						.color = v_center_0.color
-					},
-					{
-						// center vertex lower
-						.pos = {0, 0, -length-i*length},
-						.color = v_center_1.color
-					},
-					{
-						.pos = {half_width, 0, -i*length},
-						.color = v_right_0.color
-					},
-				}
-			}, RENDER_NO_TEXTURE);
-			render_push_tris((tris_t) {
-				.vertices = {
-					{
-						.pos = {half_width, 0, -i*length},
-						.color = v_right_0.color
-					},
-					{
-						// center vertex lower
-						.pos = {0, 0, -length-i*length},
-						.color = v_center_1.color
-					},
-					{
-						.pos = {half_width, 0, -length-i*length},
-						.color = v_right_1.color
-					},
-				}
-			}, RENDER_NO_TEXTURE);
-		}
+		// right side
+		render_push_tris((tris_t) {
+			.vertices = {
+				{
+					// center vertex upper
+					.pos = {0, 0, -i*length},
+					.color = v_center_0.color
+				},
+				{
+					// center vertex lower
+					.pos = {0, 0, -length-i*length},
+					.color = v_center_1.color
+				},
+				{
+					.pos = {half_width, 0, -i*length},
+					.color = v_right_0.color
+				},
+			}
+		}, RENDER_NO_TEXTURE);
+		render_push_tris((tris_t) {
+			.vertices = {
+				{
+					.pos = {half_width, 0, -i*length},
+					.color = v_right_0.color
+				},
+				{
+					// center vertex lower
+					.pos = {0, 0, -length-i*length},
+					.color = v_center_1.color
+				},
+				{
+					.pos = {half_width, 0, -length-i*length},
+					.color = v_right_1.color
+				},
+			}
+		}, RENDER_NO_TEXTURE);
 	}
 
 	render_set_depth_offset(0.0);
 	render_set_depth_write(true);
+	render_set_cull_backface(true);
 	render_set_blend_mode(RENDER_BLEND_NORMAL);
 }
 
@@ -970,6 +966,7 @@ void ship_draw_trail(ship_t *self) {
 	render_set_blend_mode(RENDER_BLEND_LIGHTER);
 	// render_set_depth_offset(-32.0);
 	render_set_depth_offset(0.0);
+	render_set_cull_backface(false);
 	int loc_0;
 	int loc_1;
 	int alpha;
@@ -995,7 +992,6 @@ void ship_draw_trail(ship_t *self) {
 		v_center_0.color.a = alpha;
 		v_center_1.color.a = alpha;
 		
-		// TODO: stop when out of sight
 		// left side
 		render_push_tris((tris_t) {
 			.vertices = {
@@ -1009,21 +1005,6 @@ void ship_draw_trail(ship_t *self) {
 				v_center_0,
 				v_left_1,
 				v_center_1
-			}
-		}, RENDER_NO_TEXTURE);
-		// left side under
-		render_push_tris((tris_t) {
-			.vertices = {
-				v_left_0,
-				v_center_0,
-				v_left_1
-			}
-		}, RENDER_NO_TEXTURE);
-		render_push_tris((tris_t) {
-			.vertices = {
-				v_center_0,
-				v_center_1,
-				v_left_1
 			}
 		}, RENDER_NO_TEXTURE);
 		// right side
@@ -1041,24 +1022,10 @@ void ship_draw_trail(ship_t *self) {
 				v_right_1
 			}
 		}, RENDER_NO_TEXTURE);
-		// right side under
-		render_push_tris((tris_t) {
-			.vertices = {
-				v_center_0,
-				v_right_0,
-				v_center_1
-			}
-		}, RENDER_NO_TEXTURE);
-		render_push_tris((tris_t) {
-			.vertices = {
-				v_right_0,
-				v_right_1,
-				v_center_1
-			}
-		}, RENDER_NO_TEXTURE);
 	}
 	render_set_depth_offset(0.0);
 	render_set_depth_write(true);
+	render_set_cull_backface(true);
 	render_set_blend_mode(RENDER_BLEND_NORMAL);
 }
 
