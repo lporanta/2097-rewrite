@@ -16,6 +16,7 @@
 #include "sfx.h"
 #include "ui.h"
 #include "particle.h"
+#include "line_particle.h"
 #include "race.h"
 #include "main_menu.h"
 #include "title.h"
@@ -679,6 +680,7 @@ void game_init(void) {
 	ships_load();
 	droid_load();
 	particles_load();
+	line_particles_load();
 	weapons_load();
 
 	global_textures_len = render_textures_len();

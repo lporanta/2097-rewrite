@@ -119,6 +119,7 @@ COMMON_SRC = \
 	src/wipeout/track.c \
 	src/wipeout/weapon.c \
 	src/wipeout/particle.c \
+	src/wipeout/line_particle.c \
 	src/wipeout/sfx.c \
 	src/utils.c \
 	src/types.c \

@@ -17,6 +17,7 @@
 #include "race.h"
 #include "sfx.h"
 #include "particle.h"
+#include "line_particle.h"
 
 void ships_load(void) {
 	// 2097 models
@@ -1303,6 +1304,16 @@ void ship_resolve_wing_collision(ship_t *self, track_face_t *face, float directi
 		if (self->pilot == g.pilot) {
 			input_rumble(0.0, 1.0, 128);
 			camera_add_shake(&g.camera, 0.15);
+			// Scrape line particles
+			vec3_t to_center = vec3_normalize(vec3_sub(self->section->center, self->position));
+			for (int i = 0; i < 8; i++) {
+				// vec3_t line_particle_vel = vec3_add(vec3_mulf(self->velocity, 0.5), to_center);
+				vec3_t line_particle_vel = vec3_mulf(self->dir_right, -direction * 0.5);
+				vec3_t line_particle_pos = vec3_add(wing_pos, vec3_mulf(self->dir_up, rand_float(-50, 50)));
+				line_particle_pos = vec3_add(line_particle_pos, vec3_mulf(self->dir_forward, rand_float(100, 300)));
+				line_particle_vel = vec3_add(line_particle_vel, vec3_mulf(self->dir_up, rand_float(-500, 500)));
+				line_particles_spawn(line_particle_pos, LINE_PARTICLE_TYPE_SCRAPE, line_particle_vel, 1);
+			}
 		}
 	}
 }

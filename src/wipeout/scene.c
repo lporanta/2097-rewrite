@@ -25,8 +25,16 @@ static Object *sky_object;
 static vec3_t sky_offset_initial;
 static vec3_t sky_offset;
 
-// TODO: Valparaiso
+// TODO:
+//
+// Valparaiso
 // wfall (-79330.000000, -8704.000000, 18960.000000)
+//
+// Phenitia Park
+// radar
+//
+// Talon's Reach
+// leaky pipes
 
 static Object *start_booms[SCENE_START_BOOMS_MAX];
 static int start_booms_len;
