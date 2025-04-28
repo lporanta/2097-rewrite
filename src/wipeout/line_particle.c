@@ -40,6 +40,7 @@ void line_particles_draw(void) {
 	mat4_t m = mat4_identity();
 	// render_set_model_mat(&m);
 	// render_set_depth_write(false);
+	render_set_cull_backface(false);
 	render_set_blend_mode(RENDER_BLEND_LIGHTER);
 	// render_set_depth_offset(-32.0);
 
@@ -69,6 +70,7 @@ void line_particles_draw(void) {
 
 	// render_set_depth_offset(0.0);
 	// render_set_depth_write(true);
+	render_set_cull_backface(true);
 	render_set_blend_mode(RENDER_BLEND_NORMAL);
 }
 
@@ -78,7 +80,13 @@ void line_particles_spawn(vec3_t position, uint16_t type, vec3_t velocity, int s
 	}
 
 	line_particle_t *p = &line_particles[line_particles_active++];
-	p->color = (rand_int(0, 10) < 4) ? rgba(255,0,0,255) : rgba(255,255,255,255);
+	// TODO:switch case
+	if (type == LINE_PARTICLE_TYPE_SCRAPE) {
+		p->color = (rand_int(0, 10) < 4) ? rgba(255,0,0,255) : rgba(255,255,255,255);
+	}
+	else if (type == LINE_PARTICLE_TYPE_RECHARGE) {
+		p->color = rgba(255,0,0,255);
+	}
 	p->position = position;
 	p->velocity = velocity;
 	// p->timer = rand_float(0.75, 1.0);

@@ -1170,6 +1170,12 @@ void ship_update(ship_t *self) {
 	// TODO: using FACE_PIT_STOP messes up checkpoints
 	// if (flags_is(face->flags, 321) || flags_is(face->flags, 325)) {
 		flags_add(self->flags, SHIP_ON_PIT_STOP);
+		vec3_t line_particle_vel = vec3_mulf(self->dir_up, 200.0);
+		vec3_t line_particle_pos = self->position;
+		line_particle_pos = vec3_add(line_particle_pos, vec3_mulf(self->dir_up, -200));
+		line_particle_pos = vec3_add(line_particle_pos, vec3_mulf(self->dir_forward, rand_float(-300, 300)));
+		line_particle_pos = vec3_add(line_particle_pos, vec3_mulf(self->dir_right, rand_float(-300, 300)));
+		line_particles_spawn(line_particle_pos, LINE_PARTICLE_TYPE_RECHARGE, line_particle_vel, 1);
 	} else {
 		flags_rm(self->flags, SHIP_ON_PIT_STOP);
 	}

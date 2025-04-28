@@ -7,6 +7,7 @@
 
 #define LINE_PARTICLE_TYPE_NONE -1
 #define LINE_PARTICLE_TYPE_SCRAPE 0
+#define LINE_PARTICLE_TYPE_RECHARGE 1
 
 typedef struct line_particle_t {
 	vec3_t position;
