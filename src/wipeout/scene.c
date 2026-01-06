@@ -18,6 +18,7 @@
 #define SCENE_STANDS_MAX 20
 #define SCENE_CAMERAS_MAX 40
 #define SCENE_FANS_MAX 20
+#define SCENE_RADARS_MAX 3
 
 static Object *scene_objects;
 
@@ -29,9 +30,6 @@ static vec3_t sky_offset;
 //
 // Valparaiso
 // wfall (-79330.000000, -8704.000000, 18960.000000)
-//
-// Phenitia Park
-// radar
 //
 // Talon's Reach
 // leaky pipes
@@ -51,11 +49,15 @@ static int cameras_len;
 static Object *fans[SCENE_FANS_MAX];
 static int fans_len;
 
+static Object *radars[SCENE_RADARS_MAX];
+static int radars_len;
+
 static Object *train;
 static vec3_t train_origin_initial;
 static vec3_t train_origin_final;
 static float train_lerp_factor;
 static bool train_triggered;
+
 
 // stand means spectators/crowd
 typedef struct {
@@ -138,7 +140,7 @@ void scene_load(const char *base_path, float sky_y_offset) {
 			cameras[cameras_len++] = obj;
 		}
 		else if (str_starts_with(obj->name, "fan")) {
-			error_if(cameras_len >= SCENE_CAMERAS_MAX, "SCENE_FANS_MAX reached");
+			error_if(fans_len >= SCENE_FANS_MAX, "SCENE_FANS_MAX reached");
 			fans[fans_len++] = obj;
 		}
 		else if (str_starts_with(obj->name, "zeppelin")) {
@@ -146,6 +148,10 @@ void scene_load(const char *base_path, float sky_y_offset) {
 			zeppelin.obj = obj;
 			zeppelin.offset_initial = vec3_sub(obj->origin, vec3(0, 0, 4096));
 			zeppelin.offset = zeppelin.offset_initial;
+		}
+		else if (str_starts_with(obj->name, "dish")) {
+			error_if(radars_len >= SCENE_RADARS_MAX, "SCENE_RADARS_MAX reached");
+			radars[radars_len++] = obj;
 		}
 
 		obj = obj->next;
@@ -179,6 +185,7 @@ void scene_update(void) {
 	if (aurora_borealis.enabled) {
 		scene_update_aurora_borealis();
 	}
+	// TODO switch case?
 	if (g.circut == CIRCUT_ODESSA_KEYS) {
 		// highest point is about y:-22000
 		float sky_swing_factor = clamp(-g.ships[g.pilot].position.y/22000, 0.0, 1.0);
@@ -227,6 +234,11 @@ void scene_update(void) {
 
 		// g.camera.position = vec3_lerp(train_origin_initial, train_origin_final, 0.8 ); //testing
 		// printf("cam pos: %f, %f, %f\n", g.camera.position.x,g.camera.position.y,g.camera.position.z);
+	}
+	else if (g.circut == CIRCUT_PHENITIA_PARK) {
+		for (int i = 0; i < radars_len; i++) {
+			mat4_set_yaw_pitch_roll(&radars[i]->mat, vec3(0, -system_time() * M_PI * 2.0, 0));
+		}
 	}
 }
 

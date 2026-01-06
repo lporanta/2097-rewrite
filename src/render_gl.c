@@ -567,7 +567,7 @@ static const char * const SHADER_POST_FS_CRT = SHADER_SOURCE(
 
 		//color manipulation
 		// color = pow(color, vec3(0.5));
-		color = mix(color, color*color, 0.4);
+		color = mix(color, color*color, 0.2);
 		// color = mix(color, pow(color, vec3(0.5)), 0.1);
 		// color *= 0.7;
 
@@ -581,17 +581,17 @@ static const char * const SHADER_POST_FS_CRT = SHADER_SOURCE(
 
 		//wavy?
 		color *= 1.0+0.01*sin(110.0*time);
-		if (uv.x < 0.0 || uv.x > 1.0)
-			color *= 0.0;
-		if (uv.y < 0.0 || uv.y > 1.0)
-			color *= 0.0;
+		// if (uv.x < 0.0 || uv.x > 1.0)
+		// 	color *= 0.0;
+		// if (uv.y < 0.0 || uv.y > 1.0)
+		// 	color *= 0.0;
 		
 		// color*=1.0-0.65*vec3(clamp((mod(gl_FragCoord.x, 2.0)-1.0)*2.0,0.0,1.0));
 
 		//noise
 		float t = mod(time, 100.0);
-		color -= 0.02*random(vec2(uv.y*t/20.12345, uv.x*t));
-		color += 0.05*random(vec2(uv.x*t/5.54321, uv.y*t));
+		color -= 0.01*random(vec2(uv.y*t/20.12345, uv.x*t));
+		color += 0.07*random(vec2(uv.x*t/5.54321, uv.y*t));
 
 		gl_FragColor = vec4(color,1.0);
 	}

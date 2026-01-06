@@ -1170,12 +1170,17 @@ void ship_update(ship_t *self) {
 	// TODO: using FACE_PIT_STOP messes up checkpoints
 	// if (flags_is(face->flags, 321) || flags_is(face->flags, 325)) {
 		flags_add(self->flags, SHIP_ON_PIT_STOP);
-		vec3_t line_particle_vel = vec3_mulf(self->dir_up, 200.0);
+		// vec3_t line_particle_vel = vec3_mulf(self->dir_up, 300.0);
+		vec3_t line_particle_vel = vec3(0,-800,0);
+		// line_particle_vel = vec3_sub(line_particle_vel, vec3_mulf(g.camera.velocity, 1));
+		// line_particle_vel = vec3_sub(line_particle_vel, vec3_mulf(self->velocity, 0.1));
+		line_particle_vel = vec3_sub(line_particle_vel, vec3_mulf(self->velocity, 0.5));
+
 		vec3_t line_particle_pos = self->position;
 		line_particle_pos = vec3_add(line_particle_pos, vec3_mulf(self->dir_up, -200));
-		line_particle_pos = vec3_add(line_particle_pos, vec3_mulf(self->dir_forward, rand_float(-300, 300)));
-		line_particle_pos = vec3_add(line_particle_pos, vec3_mulf(self->dir_right, rand_float(-300, 300)));
-		line_particles_spawn(line_particle_pos, LINE_PARTICLE_TYPE_RECHARGE, line_particle_vel, 1);
+		line_particle_pos = vec3_add(line_particle_pos, vec3_mulf(self->dir_forward, rand_float(-300, 200)));
+		line_particle_pos = vec3_add(line_particle_pos, vec3_mulf(self->dir_right, rand_float(-400, 400)));
+		line_particles_spawn(line_particle_pos, LINE_PARTICLE_TYPE_RECHARGE, line_particle_vel, 20);
 	} else {
 		flags_rm(self->flags, SHIP_ON_PIT_STOP);
 	}
@@ -1287,12 +1292,16 @@ void ship_resolve_wing_collision(ship_t *self, track_face_t *face, float directi
 	vec3_t wing_pos;
 	if (direction > 0) {
 		// self->angular_velocity.z += magnitude;
-		wing_pos = vec3_add(self->position, vec3_mulf(vec3_sub(self->dir_right, self->dir_forward), 256)); // >> 4??
+		// wing_pos = vec3_add(self->position, vec3_mulf(vec3_sub(self->dir_right, self->dir_forward), 256)); // >> 4??
+		wing_pos = vec3_add(self->position, vec3_mulf(self->dir_right, 256));
 	}
 	else {
 		// self->angular_velocity.z -= magnitude;	
-		wing_pos = vec3_sub(self->position, vec3_mulf(vec3_sub(self->dir_right, self->dir_forward), 256)); // >> 4??
+		// wing_pos = vec3_sub(self->position, vec3_mulf(vec3_sub(self->dir_right, self->dir_forward), 256)); // >> 4??
+		wing_pos = vec3_sub(self->position, vec3_mulf(self->dir_right, 256));
 	}
+	wing_pos = vec3_sub(wing_pos, vec3_mulf(self->dir_up, 256/2));
+	wing_pos = vec3_sub(wing_pos, vec3_mulf(self->dir_forward, 256/2));
 
 	// wing yaw
 	if (direction > 0) {
@@ -1310,17 +1319,21 @@ void ship_resolve_wing_collision(ship_t *self, track_face_t *face, float directi
 		if (self->pilot == g.pilot) {
 			input_rumble(0.0, 1.0, 128);
 			camera_add_shake(&g.camera, 0.15);
-			// Scrape line particles
-			vec3_t to_center = vec3_normalize(vec3_sub(self->section->center, self->position));
-			for (int i = 0; i < 8; i++) {
-				// vec3_t line_particle_vel = vec3_add(vec3_mulf(self->velocity, 0.5), to_center);
-				vec3_t line_particle_vel = vec3_mulf(self->dir_right, -direction * 0.5);
-				vec3_t line_particle_pos = vec3_add(wing_pos, vec3_mulf(self->dir_up, rand_float(-50, 50)));
-				line_particle_pos = vec3_add(line_particle_pos, vec3_mulf(self->dir_forward, rand_float(100, 300)));
-				line_particle_vel = vec3_add(line_particle_vel, vec3_mulf(self->dir_up, rand_float(-500, 500)));
-				line_particles_spawn(line_particle_pos, LINE_PARTICLE_TYPE_SCRAPE, line_particle_vel, 1);
-			}
 		}
+	}
+	// Scrape line particles WING COLLISION
+	// vec3_t to_center = vec3_normalize(vec3_sub(self->section->center, self->position));
+	for (int i = 0; i < 10; i++) {
+		// vec3_t line_particle_vel = vec3_add(vec3_mulf(self->velocity, 0.5), to_center);
+		vec3_t line_particle_vel = vec3_mulf(self->dir_right, -direction * 0.5);
+		// line_particle_vel = vec3_add(line_particle_vel, vec3_mulf(self->velocity, rand_float(0, 0.5)));
+		line_particle_vel = vec3_add(line_particle_vel, vec3_mulf(self->dir_up, rand_float(-1000, 1000)));
+		// vec3_t line_particle_pos = vec3_add(wing_pos, vec3_mulf(self->dir_up, rand_float(-50, 50)));
+		// vec3_t line_particle_pos = vec3_add(wing_pos, vec3_mulf(self->dir_up, -100));
+		line_particle_vel = vec3_mulf(line_particle_vel, rand_float(0.5, 1.5));
+		vec3_t line_particle_pos = wing_pos;
+		// line_particle_pos = vec3_add(line_particle_pos, vec3_mulf(self->dir_forward, rand_float(100, 300)));
+		line_particles_spawn(line_particle_pos, LINE_PARTICLE_TYPE_SCRAPE, line_particle_vel, 20);
 	}
 }
 
@@ -1356,6 +1369,18 @@ void ship_resolve_nose_collision(ship_t *self, track_face_t *face, float directi
 			input_rumble(1.0, 1.0, 128);
 			camera_add_shake(&g.camera, 0.3);
 		}
+	}
+	// Scrape line particles NOSE COLLISION
+	// vec3_t to_center = vec3_normalize(vec3_sub(self->section->center, self->position));
+	for (int i = 0; i < 20; i++) {
+		// vec3_t line_particle_vel = vec3_add(vec3_mulf(self->velocity, 0.5), to_center);
+		// vec3_t line_particle_vel = vec3_mulf(self->dir_forward, -2);
+		vec3_t line_particle_vel = vec3_mulf(self->dir_up, 1);
+		vec3_t line_particle_pos = vec3_add(self->position, vec3_mulf(self->dir_forward, 500));
+		// line_particle_pos = vec3_add(line_particle_pos, vec3_mulf(self->dir_forward, rand_float(100, 300)));
+		line_particle_vel = vec3_add(line_particle_vel, vec3_mulf(self->dir_up, rand_float(-1000, 1000)*((rand_int(0, 10) == 0) ? 1 : 3)));
+		line_particle_vel = vec3_add(line_particle_vel, vec3_mulf(self->dir_right, rand_float(-1000, 1000)*((rand_int(0, 10) == 0) ? 1 : 3)));
+		line_particles_spawn(line_particle_pos, LINE_PARTICLE_TYPE_SCRAPE, line_particle_vel, 20);
 	}
 }
 

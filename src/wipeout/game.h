@@ -19,6 +19,8 @@
 #define QUALIFYING_RANK 3
 #define SAVE_DATA_MAGIC 0x64736f77
 
+//game
+
 typedef enum {
 	A_UP,
 	A_DOWN,
